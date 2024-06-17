@@ -47,6 +47,8 @@ A web application that provides insights into the sentiment of accommodation rev
 ## Architecture:
 
 ![Alt text](architecture.png)
+![Alt text](auth-routing.png)
+![Alt text](accom-reviews-routing.png)
 
 ## RESTful Routing
 
