@@ -10,7 +10,7 @@
   "scripts": {
     "test": "mocha --timeout 10000 --exit --recursive",
     "coverage": "c8 -r html npm test",
-    "start": "nodemon server"
+    "start": "nodemon src/index.js"
   },
   "author": "",
   "license": "ISC",
