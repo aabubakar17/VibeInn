@@ -15,11 +15,14 @@ export default class UserAuthenticationService {
     }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    return { token, user: { id: user._id, email: user.email } };
+    return {
+      token,
+      user: { id: user._id, email: user.email, role: user.role },
+    };
   }
 
   async register(firstName, lastName, email, password) {
@@ -41,7 +44,7 @@ export default class UserAuthenticationService {
     await newUser.save();
 
     const token = jwt.sign(
-      { id: newUser._id, email: newUser.email },
+      { id: newUser._id, email: newUser.email, role: newUser.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
@@ -53,6 +56,7 @@ export default class UserAuthenticationService {
         email: newUser.email,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
+        role: newUser.role,
       },
     };
   }

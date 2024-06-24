@@ -73,4 +73,8 @@ export default class AuthController {
       }
     }
   };
+
+  allowAccess = async (req, res) => {
+    res.status(200).json({ id: req.id });
+  };
 }

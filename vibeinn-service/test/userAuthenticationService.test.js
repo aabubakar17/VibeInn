@@ -48,6 +48,7 @@ describe("UserAuthenticationService", () => {
         _id: "id",
         email: "example@123.com",
         password: "hashedpassword",
+        role: "user",
       };
       sinon.stub(User, "findOne").returns(user);
       sinon.stub(bcrypt, "compare").returns(true);
@@ -57,7 +58,7 @@ describe("UserAuthenticationService", () => {
 
       expect(result).to.deep.equal({
         token: "token",
-        user: { id: "id", email: "example@123.com" },
+        user: { id: "id", email: "example@123.com", role: "user" },
       });
     });
   });
@@ -96,6 +97,7 @@ describe("UserAuthenticationService", () => {
       expect(result.user).to.have.property("email", "example@test.com");
       expect(result.user).to.have.property("firstName", "Test");
       expect(result.user).to.have.property("lastName", "User");
+      expect(result.user).to.have.property("role", "user");
     });
   });
 

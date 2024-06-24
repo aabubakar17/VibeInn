@@ -9,6 +9,7 @@ import AuthController from "../src/controllers/authController.js";
 import UserAuthenticationService from "../src/services/UserAuthenticationService.js";
 import AuthRoutes from "../src/routes/authRoutes.js";
 import User from "../src/models/User.js";
+import AuthMiddleware from "../src/middlewares/authMiddleware.js";
 import jwt from "jsonwebtoken";
 
 use(chaiExclude);

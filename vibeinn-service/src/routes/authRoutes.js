@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import AuthController from "../controllers/authController.js";
-import authenticateJWT from "../middlewares/authenticateJWT.js";
+import AuthMiddleware from "../middlewares/authMiddleware.js";
 
 export default class AuthRoutes {
   #controller;
   #router;
   #routeStartPoint;
+  #AuthMiddleware;
 
   constructor(
     controller = new AuthController(),
@@ -15,6 +16,7 @@ export default class AuthRoutes {
     this.#controller = controller;
     this.#routeStartPoint = routeStartPoint;
     this.#router = Router();
+    this.#AuthMiddleware = new AuthMiddleware();
     this.#initialiseRoutes();
   }
 
@@ -41,12 +43,24 @@ export default class AuthRoutes {
 
     this.#router.put(
       "/update-password",
-      authenticateJWT,
+      [this.#AuthMiddleware.verify],
       [
         body("currentPassword").notEmpty().isString(),
         body("newPassword").notEmpty().isString(),
       ],
       this.#controller.updatePassword
+    );
+
+    this.#router.post(
+      "/user",
+      [this.#AuthMiddleware.verify, this.#AuthMiddleware.isUser],
+      this.#controller.allowAccess
+    );
+
+    this.#router.post(
+      "/admin",
+      [this.#AuthMiddleware.verify, this.#AuthMiddleware.isAdmin],
+      this.#controller.allowAccess
     );
   };
 
