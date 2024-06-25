@@ -48,13 +48,13 @@ const Login = ({ loggedIn, setLoggedIn }) => {
       return;
     }
 
-    startNavigationProgress();
+    /* startNavigationProgress(); */
 
     try {
       const response = await AuthService.login(email, password);
-      stopNavigationProgress();
+      /* stopNavigationProgress(); */
+
       if (response && response.token) {
-        resetNavigationProgress();
         setLoggedIn(true);
         console.log("response:", response);
         setMessage("");
@@ -62,7 +62,8 @@ const Login = ({ loggedIn, setLoggedIn }) => {
         setMessage("Login failed. Please try again.");
       }
     } catch (error) {
-      stopNavigationProgress();
+      console.log("error:", error);
+      /* stopNavigationProgress(); */
       setMessage("Login failed. Please try again.");
     }
   };

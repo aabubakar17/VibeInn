@@ -14,7 +14,10 @@ function App() {
         <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
         <main className="flex-grow overflow-y-auto">
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route
+              path="/login"
+              element={<Login setLoggedIn={setLoggedIn} />}
+            />
             <Route path="/register" element={<Register />} />
           </Routes>
         </main>

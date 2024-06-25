@@ -67,7 +67,7 @@ describe("authService", () => {
     });
   });
 
-  /* describe("logout", () => {
+  describe("logout", () => {
     test("should remove user data from local storage", () => {
       // Arrange
       localStorage.setItem(
@@ -84,5 +84,5 @@ describe("authService", () => {
       // Assert
       expect(localStorage.getItem("user")).toBeNull();
     });
-  }); */
+  });
 });
