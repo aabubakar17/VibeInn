@@ -72,4 +72,34 @@ export default class Proxy {
       throw new Error("Failed to fetch hotel data");
     }
   };
+
+  getHotelReviews = async (hotelID, checkIn, checkOut) => {
+    const cacheKey = `${hotelID}-${checkIn}-${checkOut}`;
+    const cachedResponse = this.cache.get(cacheKey);
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+
+    try {
+      const reviewResponse = await axios.get(
+        "https://tripadvisor16.p.rapidapi.com/api/v1/hotels/getHotelDetails",
+        {
+          params: {
+            id: hotelID,
+            checkIn: checkIn,
+            checkOut: checkOut,
+          },
+          headers: {
+            "x-rapidapi-key": process.env.TRIPADVISOR_API_KEY,
+            "x-rapidapi-host": "tripadvisor16.p.rapidapi.com",
+          },
+        }
+      );
+
+      this.cache.set(cacheKey, reviewResponse.data);
+      return reviewResponse.data;
+    } catch (error) {
+      throw new Error("Failed to fetch hotel reviews");
+    }
+  };
 }

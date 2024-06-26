@@ -284,5 +284,52 @@ describe("Intergration Tests", () => {
         );
       });
     });
+
+    describe("GET /api/hotel/:id", () => {
+      let getHotelReviewsStub;
+
+      beforeEach(() => {
+        getHotelReviewsStub = sinon.stub(proxy, "getHotelReviews");
+      });
+
+      afterEach(() => {
+        getHotelReviewsStub.restore();
+      });
+
+      it("should return hotel reviews for a valid hotel ID and dates", async () => {
+        getHotelReviewsStub.resolves([{ id: 1, text: "Test Review" }]);
+
+        const res = await request.get("/api/hotel/1").query({
+          checkIn: "2024-08-15",
+          checkOut: "2024-08-20",
+        });
+
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an("array").that.is.not.empty;
+        expect(res.body[0]).to.have.property("text", "Test Review");
+      });
+
+      it("should return a validation error if required query parameters are missing", async () => {
+        const res = await request.get("/api/hotel/1").query({});
+
+        expect(res.status).to.equal(422);
+        expect(res.body).to.have.property("error", "Validation failed");
+      });
+
+      it("should return a 500 error if the hotel review search fails", async () => {
+        getHotelReviewsStub.rejects(new Error("Failed to fetch hotel reviews"));
+
+        const res = await request.get("/api/hotel/1").query({
+          checkIn: "2024-08-15",
+          checkOut: "2024-08-20",
+        });
+
+        expect(res.status).to.equal(500);
+        expect(res.body).to.have.property(
+          "error",
+          "Failed to fetch hotel reviews"
+        );
+      });
+    });
   });
 });

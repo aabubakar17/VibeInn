@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { query } from "express-validator";
+import { query, param } from "express-validator";
 import AccommodationController from "../controllers/AccommodationController.js";
 
 export default class AccommodationRoutes {
@@ -26,6 +26,16 @@ export default class AccommodationRoutes {
         query("checkOut").notEmpty().isString(),
       ],
       this.#controller.searchHotels
+    );
+
+    this.#router.get(
+      "/hotel/:id",
+      [
+        param("id").notEmpty().isString(),
+        query("checkIn").notEmpty().isString(),
+        query("checkOut").notEmpty().isString(),
+      ],
+      this.#controller.getHotelReviews
     );
   };
 

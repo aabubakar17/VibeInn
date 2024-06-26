@@ -13,6 +13,7 @@ describe("AccommodationController Unit Tests", () => {
   beforeEach(() => {
     proxy = {
       searchHotels: sinon.stub(),
+      getHotelReviews: sinon.stub(),
     };
     accommodationController = new AccommodationController(proxy);
 
@@ -53,6 +54,40 @@ describe("AccommodationController Unit Tests", () => {
       expect(res.status.calledWith(500)).to.be.true;
       expect(res.json.calledWith({ error: "Failed to fetch hotel data" })).to.be
         .true;
+    });
+  });
+
+  describe("getHotelReviews", () => {
+    it("should return hotel review data if search is successful", async () => {
+      req = {
+        query: {
+          checkIn: "2024-08-15",
+          checkOut: "2024-08-20",
+        },
+        params: {
+          id: "1",
+        },
+      };
+
+      proxy.getHotelReviews.resolves([{ id: 1, name: "Test Hotel" }]);
+
+      await accommodationController.getHotelReviews(req, res, next);
+
+      expect(res.status.calledWith(200)).to.be.true;
+      expect(res.json.calledWith([{ id: 1, name: "Test Hotel" }])).to.be.true;
+    });
+
+    it("should return a 500 error if the hotel review search fails", async () => {
+      proxy.getHotelReviews.rejects(
+        new Error("Failed to fetch hotel review data")
+      );
+
+      await accommodationController.getHotelReviews(req, res, next);
+
+      expect(res.status.calledWith(500)).to.be.true;
+      expect(
+        res.json.calledWith({ error: "Failed to fetch hotel review data" })
+      ).to.be.true;
     });
   });
 });

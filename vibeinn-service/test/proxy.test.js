@@ -91,4 +91,33 @@ describe("Proxy Unit Tests", () => {
       }
     });
   });
+
+  describe("getHotelReviews", () => {
+    it("should return cached review data if available", async () => {
+      const hotelID = "1";
+      const cacheKey = `${hotelID}-2024-08-15-2024-08-20`;
+      const cachedData = [{ id: 1, review: "Test Review" }];
+      cacheGetStub.withArgs(cacheKey).returns(cachedData);
+
+      const result = await proxy.getHotelReviews(
+        hotelID,
+        "2024-08-15",
+        "2024-08-20"
+      );
+
+      expect(result).to.deep.equal(cachedData);
+      expect(axiosGetStub.called).to.be.false;
+    });
+
+    it("should throw an error if fetching review data fails", async () => {
+      const hotelID = "1";
+      axiosGetStub.rejects(new Error("API error"));
+
+      try {
+        await proxy.getHotelReviews(hotelID, "2024-08-15", "2024-08-20");
+      } catch (error) {
+        expect(error.message).to.equal("Failed to fetch hotel reviews");
+      }
+    });
+  });
 });
