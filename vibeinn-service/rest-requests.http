@@ -28,3 +28,8 @@ content-type: application/json
         "password": "Password123!"
         
     }
+
+
+###
+
+GET http://localhost:4000/api/hotels?location=London&checkIn=2024-08-15&checkOut=2024-08-20

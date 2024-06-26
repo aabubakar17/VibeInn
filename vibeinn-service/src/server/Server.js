@@ -6,20 +6,21 @@ export default class Server {
   #host;
   #port;
   #router;
-
+  #accommRouter;
   #server;
 
-  constructor(port, host, router) {
+  constructor(port, host, router, accommRouter) {
     this.#app = express();
     this.#port = port;
     this.#host = host;
     this.#router = router;
-    this.#initialiseMiddlewares(); // Initialize middlewares in the constructor
+    this.#accommRouter = accommRouter;
+    this.#initialiseMiddlewares();
   }
 
   #initialiseMiddlewares = () => {
-    this.#app.use(cors()); // Apply CORS middleware
-    this.#app.use(express.json()); // Parse incoming JSON requests
+    this.#app.use(cors());
+    this.#app.use(express.json());
   };
 
   getApp = () => {
@@ -27,7 +28,11 @@ export default class Server {
   };
 
   start = () => {
-    this.#app.use(this.#router.getRouteStartPoint(), this.#router.getRouter()); // Use router after initializing middlewares
+    this.#app.use(this.#router.getRouteStartPoint(), this.#router.getRouter());
+    this.#app.use(
+      this.#accommRouter.getRouteStartPoint(),
+      this.#accommRouter.getRouter()
+    );
     this.#server = this.#app.listen(this.#port, this.#host, () => {
       console.log(`Server is listening on http://${this.#host}:${this.#port}`);
     });
