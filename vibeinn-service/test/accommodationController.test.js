@@ -14,6 +14,7 @@ describe("AccommodationController Unit Tests", () => {
     proxy = {
       searchHotels: sinon.stub(),
       getHotelReviews: sinon.stub(),
+      getSentiment: sinon.stub(),
     };
     accommodationController = new AccommodationController(proxy);
 
@@ -88,6 +89,33 @@ describe("AccommodationController Unit Tests", () => {
       expect(
         res.json.calledWith({ error: "Failed to fetch hotel review data" })
       ).to.be.true;
+    });
+  });
+
+  describe("getSentiment", () => {
+    it("should return sentiment score if sentiment analysis is successful", async () => {
+      req = {
+        body: {
+          reviewText: "This is a test review",
+        },
+      };
+
+      proxy.getSentiment.resolves(0.5);
+
+      await accommodationController.getSentiment(req, res, next);
+
+      expect(res.status.calledWith(200)).to.be.true;
+      expect(res.json.calledWith({ sentimentScore: 0.5 })).to.be.true;
+    });
+
+    it("should return a 500 error if the sentiment analysis fails", async () => {
+      proxy.getSentiment.rejects(new Error("Failed to analyse sentiment"));
+
+      await accommodationController.getSentiment(req, res, next);
+
+      expect(res.status.calledWith(500)).to.be.true;
+      expect(res.json.calledWith({ error: "Failed to analyse sentiment" })).to
+        .be.true;
     });
   });
 });

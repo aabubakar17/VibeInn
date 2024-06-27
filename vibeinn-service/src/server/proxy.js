@@ -1,8 +1,19 @@
 import axios from "axios";
 import NodeCache from "node-cache";
+import { pipeline } from "@xenova/transformers";
+import fetch, { Headers } from "node-fetch";
+
+if (typeof global.fetch === "undefined") {
+  global.fetch = fetch;
+  if (typeof global.Headers === "undefined") {
+    global.Headers = Headers;
+  }
+}
 
 export default class Proxy {
   cache = new NodeCache({ stdTTL: 86400 });
+  pipe = null;
+
   searchLocation = async (location) => {
     const cachedResponse = this.cache.get(location);
     if (cachedResponse) {
@@ -100,6 +111,42 @@ export default class Proxy {
       return reviewResponse.data;
     } catch (error) {
       throw new Error("Failed to fetch hotel reviews");
+    }
+  };
+
+  getSentiment = async (reviewText) => {
+    reviewText = reviewText.replace(/<[^>]*>?/gm, "");
+    try {
+      const cachedResult = this.cache.get(reviewText);
+      if (cachedResult) {
+        return cachedResult;
+      }
+
+      if (!this.pipe) {
+        this.pipe = await pipeline(
+          "sentiment-analysis",
+          "Xenova/distilbert-base-uncased-finetuned-sst-2-english"
+        );
+      }
+
+      const sentimentScore = await this.pipe(reviewText);
+
+      const { label, score } = sentimentScore[0];
+
+      let mappedScore = 5;
+      if (label === "NEGATIVE") {
+        mappedScore = 1 + (1 - score) * 4;
+      } else if (label === "POSITIVE") {
+        mappedScore = 6 + score * 4;
+      }
+
+      mappedScore = Math.round(mappedScore);
+
+      this.cache.set(reviewText, mappedScore);
+
+      return mappedScore;
+    } catch (error) {
+      return error;
     }
   };
 }

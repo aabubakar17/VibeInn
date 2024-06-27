@@ -11,6 +11,7 @@ describe("Proxy Unit Tests", () => {
 
   beforeEach(() => {
     proxy = new Proxy();
+
     axiosGetStub = sinon.stub(axios, "get");
     cacheGetStub = sinon.stub(proxy.cache, "get");
     cacheSetStub = sinon.stub(proxy.cache, "set");
@@ -20,6 +21,7 @@ describe("Proxy Unit Tests", () => {
     axiosGetStub.restore();
     cacheGetStub.restore();
     cacheSetStub.restore();
+    sinon.restore();
   });
 
   describe("searchLocation", () => {
@@ -118,6 +120,35 @@ describe("Proxy Unit Tests", () => {
       } catch (error) {
         expect(error.message).to.equal("Failed to fetch hotel reviews");
       }
+    });
+  });
+  describe("getSentiment", () => {
+    it("should correctly cache sentiment analysis result", async () => {
+      const reviewText = "This is a great hotel!";
+      const expectedScore = 9;
+
+      const mockPipeFunction = sinon
+        .stub()
+        .resolves([{ label: "POSITIVE", score: 0.8 }]);
+      proxy.pipe = mockPipeFunction;
+
+      const result = await proxy.getSentiment(reviewText);
+
+      expect(result).to.equal(expectedScore);
+      expect(cacheSetStub.calledOnce).to.be.true;
+      expect(cacheSetStub.calledWith(reviewText, expectedScore)).to.be.true;
+    });
+    it("should handle error during sentiment analysis gracefully", async () => {
+      const error = new Error("Pipeline initialization failed");
+      sinon.stub(proxy, "pipe").get(() => {
+        throw error;
+      });
+
+      const reviewText = "This is a great hotel!";
+
+      const result = await proxy.getSentiment(reviewText);
+
+      expect(result).to.equal(error);
     });
   });
 });

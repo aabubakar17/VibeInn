@@ -331,5 +331,49 @@ describe("Intergration Tests", () => {
         );
       });
     });
+
+    describe("POST /api/sentiment", () => {
+      let getSentimentStub;
+
+      beforeEach(() => {
+        getSentimentStub = sinon.stub(proxy, "getSentiment");
+      });
+
+      afterEach(() => {
+        getSentimentStub.restore();
+      });
+
+      it("should return a sentiment score for a valid review text", async () => {
+        getSentimentStub.resolves(0.5);
+
+        const res = await request.post("/api/sentiment").send({
+          reviewText: "This is a test review",
+        });
+
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property("sentimentScore", 0.5);
+      });
+
+      it("should return a validation error if review text is missing", async () => {
+        const res = await request.post("/api/sentiment").send({});
+
+        expect(res.status).to.equal(422);
+        expect(res.body).to.have.property("error", "Validation failed");
+      });
+
+      it("should return a 500 error if the sentiment analysis fails", async () => {
+        getSentimentStub.rejects(new Error("Failed to analyse sentiment"));
+
+        const res = await request.post("/api/sentiment").send({
+          reviewText: "This is a test review",
+        });
+
+        expect(res.status).to.equal(500);
+        expect(res.body).to.have.property(
+          "error",
+          "Failed to analyse sentiment"
+        );
+      });
+    });
   });
 });

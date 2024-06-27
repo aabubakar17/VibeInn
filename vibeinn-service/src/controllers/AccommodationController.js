@@ -47,4 +47,18 @@ export default class AccommodationController {
       res.status(500).json({ error: error.message });
     }
   };
+
+  getSentiment = async (req, res) => {
+    const errors = validationResult(req);
+    this.handleValidationError(res, errors);
+
+    const { reviewText } = req.body;
+
+    try {
+      const data = await this.#service.getSentiment(reviewText);
+      res.status(200).json({ sentimentScore: data });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
