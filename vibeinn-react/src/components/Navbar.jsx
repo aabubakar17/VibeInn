@@ -21,18 +21,15 @@ const Navbar = ({ loggedIn, setLoggedIn }) => {
   };
 
   return (
-    <nav className="sticky top-0 w-full bg-white shadow-md">
+    <nav className="sticky top-0 w-full bg-opacity-30  shadow-md z-50 ">
       <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a
-          href="https://flowbite.com/"
-          className="flex items-center space-x-3 rtl:space-x-reverse"
-        >
+        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img
             src="https://flowbite.com/docs/images/logo.svg"
             className="h-8"
             alt="Flowbite Logo"
           />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap ">
             VibeInn
           </span>
         </a>
@@ -62,14 +59,13 @@ const Navbar = ({ loggedIn, setLoggedIn }) => {
         </button>
         <div
           className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
-          id="navbar-default"
         >
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <ul className="font-medium  !bg-transparent flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 ">
             <li>
               {loggedIn ? (
                 <a
                   href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0  md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   onClick={handleLogout}
                 >
                   Logout
@@ -77,7 +73,7 @@ const Navbar = ({ loggedIn, setLoggedIn }) => {
               ) : (
                 <a
                   href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0  md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
                   onClick={handleLoginClick}
                 >
                   Login
@@ -86,8 +82,8 @@ const Navbar = ({ loggedIn, setLoggedIn }) => {
             </li>
             <li>
               <a
-                href="#"
-                className="mt-4 bg-slate-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider md:mt-0 md:ml-4"
+                href="/register"
+                className="mt-4 bg-gradient-to-r from-pink-500 to-yellow-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider md:mt-0 md:ml-4"
               >
                 Get Started ➔
               </a>

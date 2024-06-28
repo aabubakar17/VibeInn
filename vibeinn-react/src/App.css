@@ -9,3 +9,11 @@ body {
 #root {
   min-height: 100%;
 }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 6px 0 rgba(31, 38, 135, 0.37);
+}
