@@ -347,7 +347,7 @@ describe("Intergration Tests", () => {
         getSentimentStub.resolves(0.5);
 
         const res = await request.post("/api/sentiment").send({
-          reviewText: "This is a test review",
+          reviewText: ["This is a test review"],
         });
 
         expect(res.status).to.equal(200);
@@ -365,7 +365,7 @@ describe("Intergration Tests", () => {
         getSentimentStub.rejects(new Error("Failed to analyse sentiment"));
 
         const res = await request.post("/api/sentiment").send({
-          reviewText: "This is a test review",
+          reviewText: ["This is a test review"],
         });
 
         expect(res.status).to.equal(500);

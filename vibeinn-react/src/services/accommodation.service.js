@@ -14,8 +14,29 @@ const getHotels = async (location, checkIn, checkOut) => {
   }
 };
 
+const getHotelDetails = async (id, checkIn, checkOut) => {
+  try {
+    const response = await axios.get(
+      `${API_URL_ACCOMM}/hotel/${id}?checkIn=${checkIn}&checkOut=${checkOut}`
+    );
+
+    return {
+      title: response.data.data.title,
+      location: response.data.data.geoPoint,
+      reviews: response.data.data.reviews,
+      about: response.data.data.about,
+      tags: response.data.data.tags,
+      photos: response.data.data.photos,
+      rating: response.data.data.rating,
+      numberReviews: response.data.data.numberReviews,
+    };
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 const accommService = {
   getHotels,
+  getHotelDetails,
 };
 
 export default accommService;

@@ -40,7 +40,7 @@ export default class AccommodationRoutes {
 
     this.#router.post(
       "/sentiment",
-      [body("reviewText").notEmpty().isString()],
+      [body("reviewText").notEmpty().isArray()],
       this.#controller.getSentiment
     );
   };

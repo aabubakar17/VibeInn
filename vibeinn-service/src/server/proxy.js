@@ -114,39 +114,59 @@ export default class Proxy {
     }
   };
 
-  getSentiment = async (reviewText) => {
-    reviewText = reviewText.replace(/<[^>]*>?/gm, "");
-    try {
-      const cachedResult = this.cache.get(reviewText);
-      if (cachedResult) {
-        return cachedResult;
+  getSentiment = async (reviewTexts) => {
+    // Function to process a single review text
+    reviewTexts = reviewTexts.map((reviewText) =>
+      reviewText.replace(/<[^>]*>?/gm, "")
+    );
+
+    const processReview = async (reviewText) => {
+      try {
+        const cachedResult = this.cache.get(reviewText);
+        if (cachedResult) {
+          return cachedResult;
+        }
+
+        if (!this.pipe) {
+          this.pipe = await pipeline(
+            "sentiment-analysis",
+            "Xenova/distilbert-base-uncased-finetuned-sst-2-english"
+          );
+        }
+
+        const sentimentScore = await this.pipe(reviewText);
+
+        const { label, score } = sentimentScore[0];
+
+        let mappedScore = 5;
+        if (label === "NEGATIVE") {
+          mappedScore = 1 + (1 - score) * 4;
+        } else if (label === "POSITIVE") {
+          mappedScore = 6 + score * 4;
+        }
+
+        mappedScore = Math.round(mappedScore);
+
+        this.cache.set(reviewText, mappedScore);
+
+        return mappedScore;
+      } catch (error) {
+        return error.message;
       }
+    };
 
-      if (!this.pipe) {
-        this.pipe = await pipeline(
-          "sentiment-analysis",
-          "Xenova/distilbert-base-uncased-finetuned-sst-2-english"
-        );
-      }
-
-      const sentimentScore = await this.pipe(reviewText);
-
-      const { label, score } = sentimentScore[0];
-
-      let mappedScore = 5;
-      if (label === "NEGATIVE") {
-        mappedScore = 1 + (1 - score) * 4;
-      } else if (label === "POSITIVE") {
-        mappedScore = 6 + score * 4;
-      }
-
-      mappedScore = Math.round(mappedScore);
-
-      this.cache.set(reviewText, mappedScore);
-
-      return mappedScore;
-    } catch (error) {
-      return error;
+    // If reviewTexts is not an array, convert it to an array with a single element
+    if (!Array.isArray(reviewTexts)) {
+      reviewTexts = [reviewTexts];
     }
+
+    // Process each review text and gather the results
+    const results = [];
+    for (const reviewText of reviewTexts) {
+      const result = await processReview(reviewText);
+      results.push(result);
+    }
+
+    return results;
   };
 }
