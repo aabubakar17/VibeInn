@@ -15,13 +15,23 @@ export default class Server {
     this.#host = host;
     this.#router = router;
     this.#accommRouter = accommRouter;
-    this.#initialiseMiddlewares();
-  }
 
-  #initialiseMiddlewares = () => {
-    this.#app.use(cors());
+    this.#app.use(
+      cors(
+        app.use(
+          cors({
+            origin: [
+              "http://localhost:5173",
+              "https://vibeinnservice.onrender.com",
+              "http://vibeinnservice.onrender.com",
+            ],
+            credentials: true,
+          })
+        )
+      )
+    );
     this.#app.use(express.json());
-  };
+  }
 
   getApp = () => {
     return this.#app;

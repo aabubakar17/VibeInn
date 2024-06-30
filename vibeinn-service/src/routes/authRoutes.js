@@ -1,66 +1,47 @@
 import { Router } from "express";
-import { body } from "express-validator";
-import AuthController from "../controllers/authController.js";
-import AuthMiddleware from "../middlewares/authMiddleware.js";
+import { query, param, body } from "express-validator";
+import AccommodationController from "../controllers/AccommodationController.js";
 
-export default class AuthRoutes {
+export default class AccommodationRoutes {
   #controller;
   #router;
   #routeStartPoint;
-  #AuthMiddleware;
 
   constructor(
-    controller = new AuthController(),
-    routeStartPoint = "/api/auth"
+    controller = new AccommodationController(),
+    routeStartPoint = "/api"
   ) {
     this.#controller = controller;
     this.#routeStartPoint = routeStartPoint;
     this.#router = Router();
-    this.#AuthMiddleware = new AuthMiddleware();
     this.#initialiseRoutes();
   }
 
   #initialiseRoutes = () => {
-    this.#router.post(
-      "/login",
+    this.#router.get(
+      "/hotels",
       [
-        body(`email`).notEmpty().isString(),
-        body(`password`).notEmpty().isString(),
+        query("location").notEmpty().isString(),
+        query("checkIn").notEmpty().isString(),
+        query("checkOut").notEmpty().isString(),
       ],
-      this.#controller.loginController
+      this.#controller.searchHotels
     );
 
-    this.#router.post(
-      "/register",
+    this.#router.get(
+      "/hotel/:id",
       [
-        body("firstName").notEmpty().isString(),
-        body("lastName").notEmpty().isString(),
-        body(`email`).notEmpty().isString(),
-        body(`password`).notEmpty().isString(),
+        param("id").notEmpty().isString(),
+        query("checkIn").notEmpty().isString(),
+        query("checkOut").notEmpty().isString(),
       ],
-      this.#controller.registerController
-    );
-
-    this.#router.put(
-      "/update-password",
-      [this.#AuthMiddleware.verify],
-      [
-        body("currentPassword").notEmpty().isString(),
-        body("newPassword").notEmpty().isString(),
-      ],
-      this.#controller.updatePassword
+      this.#controller.getHotelReviews
     );
 
     this.#router.post(
-      "/user",
-      [this.#AuthMiddleware.verify, this.#AuthMiddleware.isUser],
-      this.#controller.allowAccess
-    );
-
-    this.#router.post(
-      "/admin",
-      [this.#AuthMiddleware.verify, this.#AuthMiddleware.isAdmin],
-      this.#controller.allowAccess
+      "/sentiment",
+      [body("reviewText").notEmpty().isArray()],
+      this.#controller.getSentiment
     );
   };
 

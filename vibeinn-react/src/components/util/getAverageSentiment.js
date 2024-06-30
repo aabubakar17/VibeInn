@@ -50,8 +50,22 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
       })
     );
 
-    console.log(sentiments);
-    /* return sentiments; */
+    /*     console.log(typeof sentiments[0].sentimentScore[0]); */
+
+    // Calculate average sentiment for each hotel
+    const averageSentiments = sentiments.map((hotelSentiments) => {
+      if (hotelSentiments && hotelSentiments.sentimentScore.length > 0) {
+        const sum = hotelSentiments.sentimentScore.reduce((a, b) => a + b, 0);
+        console.log(sum);
+        return sum / hotelSentiments.sentimentScore.length;
+      } else {
+        return null;
+      }
+    });
+
+    console.log(averageSentiments);
+
+    return averageSentiments;
   } catch (error) {
     console.error("Error getting average sentiment:", error);
     throw error;

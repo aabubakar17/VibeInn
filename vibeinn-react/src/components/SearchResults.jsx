@@ -21,6 +21,7 @@ const SearchResults = () => {
   const [hoveredHotelId, setHoveredHotelId] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const [averageSentiments, setAverageSentiments] = useState([]);
 
   useEffect(() => {
     fetchHotels();
@@ -30,7 +31,7 @@ const SearchResults = () => {
     if (hotels.length > 0) {
       getAverageSentiment(hotels, checkIn, checkOut)
         .then((sentiments) => {
-          console.log(sentiments);
+          setAverageSentiments(sentiments);
         })
         .catch((error) => {
           console.error("Error getting sentiments:", error);
@@ -121,7 +122,7 @@ const SearchResults = () => {
         {/* Scrollable cards section */}
         <div className="flex-1 overflow-y-auto p-4 min  order-2 lg:order-1">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-            {hotels.map((hotel) => (
+            {hotels.map((hotel, index) => (
               <Card
                 key={hotel.id}
                 radius="md"
@@ -189,12 +190,22 @@ const SearchResults = () => {
                       {hotel.secondaryInfo}
                     </Text>
                   )}
+                  {/* Display Average Sentiment */}
+                  {averageSentiments[index] !== undefined && (
+                    <Text className="text-sm mt-2 w-22 text ">
+                      <span className="inline-block bg-blue-500 text-white text-center font-bold py-1 px-3 rounded-lg float-right">
+                        Vibe Score:
+                        <br />
+                        {averageSentiments[index]}
+                      </span>
+                    </Text>
+                  )}
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-xl font-bold">
                       {hotel.priceForDisplay?.replace("$", "£")}{" "}
                       <span className="text-sm text-gray-500">/ night</span>
                     </div>
-                    <Button radius="md">Book now</Button>
+                    {/* <Button radius="md">Book now</Button> */}
                   </div>
                 </div>
               </Card>
