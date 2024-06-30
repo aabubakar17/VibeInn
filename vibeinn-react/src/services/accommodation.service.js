@@ -20,16 +20,20 @@ const getHotelDetails = async (id, checkIn, checkOut) => {
       `${API_URL_ACCOMM}/hotel/${id}?checkIn=${checkIn}&checkOut=${checkOut}`
     );
 
-    return {
-      title: response.data.data.title,
-      location: response.data.data.geoPoint,
-      reviews: response.data.data.reviews,
-      about: response.data.data.about,
-      tags: response.data.data.tags,
-      photos: response.data.data.photos,
-      rating: response.data.data.rating,
-      numberReviews: response.data.data.numberReviews,
-    };
+    if (response.data.data) {
+      return {
+        title: response.data.data.title,
+        location: response.data.data.geoPoint,
+        reviews: response.data.data.reviews,
+        about: response.data.data.about,
+        tags: response.data.data.tags,
+        photos: response.data.data.photos,
+        rating: response.data.data.rating,
+        numberReviews: response.data.data.numberReviews,
+      };
+    } else {
+      return null;
+    }
   } catch (error) {
     throw new Error(error);
   }

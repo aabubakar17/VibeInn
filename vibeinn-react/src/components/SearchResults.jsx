@@ -8,7 +8,7 @@ import accommService from "../services/accommodation.service";
 import MapContainer from "./MapContainer";
 import { Carousel } from "react-responsive-carousel";
 import APIProviderWrapper from "./APIProviderWrapper";
-/* import getAverageSentiment from "./util/getAverageSentiment"; */
+import getAverageSentiment from "./util/getAverageSentiment";
 
 const SearchResults = () => {
   const location = useLocation();
@@ -26,7 +26,7 @@ const SearchResults = () => {
     fetchHotels();
   }, [searchLocation, checkIn, checkOut]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (hotels.length > 0) {
       getAverageSentiment(hotels, checkIn, checkOut)
         .then((sentiments) => {
@@ -36,7 +36,7 @@ const SearchResults = () => {
           console.error("Error getting sentiments:", error);
         });
     }
-  }, [hotels, checkIn, checkOut]); */
+  }, [hotels, checkIn, checkOut]);
 
   const fetchHotels = () => {
     accommService

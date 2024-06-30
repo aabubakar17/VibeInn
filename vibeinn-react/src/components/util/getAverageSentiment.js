@@ -1,4 +1,4 @@
-/* import accommService from "../../services/accommodation.service";
+import accommService from "../../services/accommodation.service";
 import sentimentService from "../../services/sentiment.service";
 
 export default async function getAverageSentiment(hotels, checkIn, checkOut) {
@@ -18,36 +18,42 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
             `Error fetching details for hotel ID ${hotel.id}:`,
             error
           );
-          return [];
+          return { content: [] };
         }
       })
     );
 
-    // Flatten the array of reviews arrays into a single array
-
-    const allReviews = reviews.map((hotelReviews) =>
-      hotelReviews.content.map((review) => review.text).flat()
+    // Filter out any empty arrays from the reviews
+    const filteredReviews = reviews.filter(
+      (hotelReviews) => hotelReviews.content.length > 0
     );
 
-    console.log(allReviews[0]);
+    console.log(filteredReviews);
+    // Extract review texts from the filtered reviews
+    const allReviewTexts = filteredReviews.map((hotelReviews) =>
+      hotelReviews.content.map((review) => review.text)
+    );
 
-    
+    /* console.log(allReviewTexts[0]); */
+
     // Get sentiments for the extracted reviews
-     const sentiments = allReviews.map(async (reviewsForSentiment) =>{
-    
-      try {
-        const result = await sentimentService.getSentiment(reviewsForSentiment);
-        return result;
-      } catch (error) {
-        console.error("Error getting sentiment:", error);
-        return [];
-      
-      }
-    })
 
-     return sentiments;
+    const sentiments = await Promise.all(
+      allReviewTexts.map(async (hotelReviews) => {
+        try {
+          const result = await sentimentService.getSentiment(hotelReviews);
+          return result;
+        } catch (error) {
+          console.error("Error getting sentiment:", error);
+          return null;
+        }
+      })
+    );
+
+    console.log(sentiments);
+    /* return sentiments; */
   } catch (error) {
     console.error("Error getting average sentiment:", error);
     throw error;
   }
-} */
+}

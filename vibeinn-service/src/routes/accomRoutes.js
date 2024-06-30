@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { query, param, body } from "express-validator";
 import AccommodationController from "../controllers/AccommodationController.js";
+import cors from "cors";
 
 export default class AccommodationRoutes {
   #controller;
@@ -40,6 +41,7 @@ export default class AccommodationRoutes {
 
     this.#router.post(
       "/sentiment",
+      cors(),
       [body("reviewText").notEmpty().isArray()],
       this.#controller.getSentiment
     );
