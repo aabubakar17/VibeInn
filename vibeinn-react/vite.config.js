@@ -9,5 +9,6 @@ export default defineConfig({
     setupFiles: ["./tests/config/setup.js"],
     testMatch: ["./tests/**/*.test.jsx$?"],
     globals: true,
+    exclude: ["**/node_modules/**", "/*.config.js/**"],
   },
 });

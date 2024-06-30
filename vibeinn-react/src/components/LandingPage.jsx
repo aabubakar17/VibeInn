@@ -27,7 +27,16 @@ const LandingPage = () => {
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <Hero />
+
+        <Container className="text-center mt-24">
+          <Title className="text-4xl font-bold">
+            Discover the Vibe of Your Next Stay
+          </Title>
+          <Text className="mt-4 text-xl">
+            Find the perfect accommodation with insights from real user reviews.
+          </Text>
+          <Hero />
+        </Container>
         {/* Features Section */}
         <Features />
         {/* How It Works Section */}

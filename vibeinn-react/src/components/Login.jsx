@@ -3,11 +3,6 @@ import loginGraphic from "../assets/loginGraphic.png";
 import { useNavigate } from "react-router-dom";
 import { Alert } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
-import {
-  startNavigationProgress,
-  stopNavigationProgress,
-  resetNavigationProgress,
-} from "@mantine/nprogress";
 import AuthService from "../services/auth.service";
 
 const Login = ({ loggedIn, setLoggedIn }) => {
@@ -48,11 +43,8 @@ const Login = ({ loggedIn, setLoggedIn }) => {
       return;
     }
 
-    /* startNavigationProgress(); */
-
     try {
       const response = await AuthService.login(email, password);
-      /* stopNavigationProgress(); */
 
       if (response && response.token) {
         setLoggedIn(true);
@@ -63,7 +55,7 @@ const Login = ({ loggedIn, setLoggedIn }) => {
       }
     } catch (error) {
       console.log("error:", error);
-      /* stopNavigationProgress(); */
+
       setMessage("Login failed. Please try again.");
     }
   };

@@ -30,8 +30,8 @@ const Footer = () => {
           Connect with me on LinkedIn and GitHub
         </p>
         <p className="text-center">
-          &copy; {new Date().getFullYear()} Abubakar Abdihakim Abubakar <br />{" "}
-          All rights reserved.
+          &copy; {new Date().getFullYear()} Abubakar Abdihakim Abubakar All
+          rights reserved.
         </p>
       </div>
     </footer>
