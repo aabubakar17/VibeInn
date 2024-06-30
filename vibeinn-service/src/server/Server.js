@@ -17,18 +17,14 @@ export default class Server {
     this.#accommRouter = accommRouter;
 
     this.#app.use(
-      cors(
-        app.use(
-          cors({
-            origin: [
-              "http://localhost:5173",
-              "https://vibeinnservice.onrender.com",
-              "http://vibeinnservice.onrender.com",
-            ],
-            credentials: true,
-          })
-        )
-      )
+      cors({
+        origin: [
+          "http://localhost:5173",
+          "https://vibeinnservice.onrender.com",
+          "http://vibeinnservice.onrender.com",
+        ],
+        credentials: true,
+      })
     );
     this.#app.use(express.json());
   }
