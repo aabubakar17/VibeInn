@@ -68,4 +68,40 @@ export default class ReviewController {
       });
     }
   };
+
+  deleteReview = async (req, res) => {
+    const errors = validationResult(req);
+    this.handleValidationError(res, errors);
+
+    try {
+      const { reviewId } = req.body;
+      const userId = req.user.id;
+
+      await this.#service.deleteReview(userId, reviewId);
+
+      res.status(200).json({
+        message: "Review deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
+
+  getReviewsByUserId = async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+      const reviews = await this.#service.getReviewsByUserId(userId);
+
+      res.status(200).json(reviews);
+    } catch (error) {
+      console.error("Error getting reviews by user ID:", error);
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
 }

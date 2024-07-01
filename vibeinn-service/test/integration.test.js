@@ -508,5 +508,98 @@ describe("Intergration Tests", () => {
         expect(res.body).to.have.property("message", "Failed to update review");
       });
     });
+
+    describe("DELETE /api/review/delete", () => {
+      let deleteReviewStub;
+      let token;
+
+      beforeEach(async () => {
+        token = jwt.sign({ id: 1 }, process.env.JWT_SECRET);
+        deleteReviewStub = sinon.stub(reviewService, "deleteReview");
+      });
+
+      afterEach(() => {
+        deleteReviewStub.restore();
+      });
+
+      it("should successfully delete a review with valid details", async () => {
+        const token = jwt.sign({ id: 1 }, process.env.JWT_SECRET);
+        const reviewId = "1";
+
+        const res = await request
+          .delete("/api/review/delete")
+          .set("x-access-token", token)
+          .send({ reviewId });
+
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property(
+          "message",
+          "Review deleted successfully"
+        );
+      });
+
+      it("should return a validation error if required fields are missing", async () => {
+        const res = await request
+          .delete("/api/review/delete")
+          .set("x-access-token", token)
+          .send({});
+
+        expect(res.status).to.equal(422);
+        expect(res.body).to.have.property("error", "Validation failed");
+      });
+
+      it("should return a 500 error if the review deletion fails", async () => {
+        deleteReviewStub.rejects(new Error("Failed to delete review"));
+
+        const res = await request
+          .delete("/api/review/delete")
+          .set("x-access-token", token)
+          .send({ reviewId: "1" });
+
+        expect(res.status).to.equal(500);
+        expect(res.body).to.have.property("message", "Failed to delete review");
+      });
+    });
+  });
+
+  describe("GET /api/review/user/:id", () => {
+    let getReviewsByUserIdStub;
+    let token;
+
+    beforeEach(async () => {
+      token = jwt.sign({ id: 1 }, process.env.JWT_SECRET);
+      getReviewsByUserIdStub = sinon.stub(reviewService, "getReviewsByUserId");
+    });
+
+    afterEach(() => {
+      getReviewsByUserIdStub.restore();
+    });
+
+    it("should return a user's reviews with a valid user ID", async () => {
+      getReviewsByUserIdStub.resolves([
+        { id: 1, text: "Test Review 1" },
+        { id: 2, text: "Test Review 2" },
+      ]);
+
+      const res = await request
+        .get("/api/review/user/1")
+        .set("x-access-token", token);
+
+      expect(res.status).to.equal(200);
+      expect(res.body).to.be.an("array").that.is.not.empty;
+      expect(res.body[0]).to.have.property("text", "Test Review 1");
+      expect(res.body[1]).to.have.property("text", "Test Review 2");
+    });
+
+    it("should return a 500 error if the review search fails", async () => {
+      getReviewsByUserIdStub.rejects(new Error("Failed to fetch reviews"));
+
+      const res = await request
+        .get("/api/review/user/1")
+        .set("x-access-token", token);
+
+      expect(res.status).to.equal(500);
+      expect(res.body).to.have.property("message", "Failed to fetch reviews");
+    });
   });
 });

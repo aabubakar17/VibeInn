@@ -39,6 +39,19 @@ export default class ReviewRoutes {
       ],
       this.#controller.updateReview
     );
+
+    this.#router.delete(
+      "/delete", // DELETE /api/review/delete
+      [this.#AuthMiddleware.verify],
+      [body("reviewId").notEmpty().isString()],
+      this.#controller.deleteReview
+    );
+
+    this.#router.get(
+      "/user/:userId", // GET /api/review/user/:userId
+      [this.#AuthMiddleware.verify], // Optionally add authentication middleware if needed
+      (req, res) => this.#controller.getReviewsByUserId(req, res)
+    );
   };
 
   getRouter = () => {

@@ -32,4 +32,29 @@ export default class ReviewService {
       throw new Error("Error updating review");
     }
   }
+
+  async deleteReview(userId, reviewId) {
+    try {
+      const deletedReview = await Review.findOneAndDelete({
+        _id: reviewId,
+        userId,
+      });
+
+      return deletedReview;
+    } catch (error) {
+      console.error("Error in ReviewService deleteReview:", error);
+      throw new Error("Error deleting review");
+    }
+  }
+
+  async getReviewsByUserId(userId) {
+    try {
+      const reviews = await Review.find({ userId }); // Populate accommodation details if necessary
+      console.log(reviews);
+      return reviews;
+    } catch (error) {
+      console.error("Error in ReviewService getReviewsByUserId:", error);
+      throw new Error("Error fetching reviews");
+    }
+  }
 }

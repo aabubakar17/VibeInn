@@ -122,4 +122,110 @@ describe("ReviewController", () => {
       });
     });
   });
+
+  describe("deleteReview", () => {
+    it("should delete a review", async () => {
+      const reviewService = {
+        deleteReview: sinon.stub().resolves({ id: 1 }),
+      };
+      const req = {
+        body: {
+          reviewId: "1",
+        },
+        user: {
+          id: "1",
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.spy(),
+      };
+
+      const reviewController = new ReviewController(reviewService);
+      await reviewController.deleteReview(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.json, {
+        message: "Review deleted successfully",
+      });
+    });
+
+    it("should return a 500 error if the review deletion fails", async () => {
+      const reviewService = {
+        deleteReview: sinon
+          .stub()
+          .rejects(new Error("Failed to delete review")),
+      };
+      const req = {
+        body: {
+          reviewId: "1",
+        },
+        user: {
+          id: "1",
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.spy(),
+      };
+
+      const reviewController = new ReviewController(reviewService);
+      await reviewController.deleteReview(req, res);
+
+      sinon.assert.calledWith(res.status, 500);
+      sinon.assert.calledWith(res.json, {
+        message: "Failed to delete review",
+      });
+    });
+  });
+
+  describe("getReviewsByUserId", () => {
+    it("should get reviews by user ID", async () => {
+      const reviewService = {
+        getReviewsByUserId: sinon
+          .stub()
+          .resolves([{ id: 1, reviewText: "Great hotel" }]),
+      };
+      const req = {
+        params: {
+          userId: "1",
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.spy(),
+      };
+
+      const reviewController = new ReviewController(reviewService);
+      await reviewController.getReviewsByUserId(req, res);
+
+      sinon.assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.json, [{ id: 1, reviewText: "Great hotel" }]);
+    });
+
+    it("should return a 500 error if fetching reviews fails", async () => {
+      const reviewService = {
+        getReviewsByUserId: sinon
+          .stub()
+          .rejects(new Error("Failed to fetch reviews")),
+      };
+      const req = {
+        params: {
+          userId: "1",
+        },
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.spy(),
+      };
+
+      const reviewController = new ReviewController(reviewService);
+      await reviewController.getReviewsByUserId(req, res);
+
+      sinon.assert.calledWith(res.status, 500);
+      sinon.assert.calledWith(res.json, {
+        message: "Failed to fetch reviews",
+      });
+    });
+  });
 });
