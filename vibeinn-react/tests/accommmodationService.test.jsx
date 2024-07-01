@@ -50,4 +50,54 @@ describe("accommodationService", () => {
       ).rejects.toThrow("Error");
     });
   });
+
+  describe("getHotelDetails", () => {
+    it("should fetch hotel details for given id and dates", async () => {
+      // Arrange
+      const id = 1;
+      const checkIn = "2024-07-01";
+      const checkOut = "2024-07-05";
+      const response = {
+        data: {
+          data: {
+            title: "Paris Hotel",
+            geoPoint: "48.8566, 2.3522",
+            reviews: {
+              content: [
+                {
+                  text: "Great hotel!",
+                },
+              ],
+            },
+            about: "A great hotel in Paris",
+            tags: ["Paris", "Hotel"],
+            photos: ["photo1.jpg", "photo2.jpg"],
+            rating: 4.5,
+            numberReviews: 100,
+            amenitiesScreen: ["Free WiFi", "Breakfast"],
+          },
+        },
+      };
+
+      axios.get.mockResolvedValue(response);
+
+      // Act
+      const result = await accommService.getHotelDetails(id, checkIn, checkOut);
+
+      // Assert
+      expect(result).toEqual({
+        title: "Paris Hotel",
+        location: "48.8566, 2.3522",
+        reviews: {
+          content: [{ text: "Great hotel!" }],
+        },
+        about: "A great hotel in Paris",
+        tags: ["Paris", "Hotel"],
+        photos: ["photo1.jpg", "photo2.jpg"],
+        rating: 4.5,
+        numberReviews: 100,
+        amenities: ["Free WiFi", "Breakfast"],
+      });
+    });
+  });
 });

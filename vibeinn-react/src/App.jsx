@@ -20,7 +20,10 @@ function App() {
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SearchResults />} />
-          <Route path="/hotelpage/:id" element={<HotelPage />} />
+          <Route
+            path="/hotelpage/:id"
+            element={<HotelPage loggedIn={loggedIn} />}
+          />
         </Routes>
       </main>
       <Footer />

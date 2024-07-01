@@ -1,13 +1,23 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, it, vi } from "vitest";
 import accommService from "../src/services/accommodation.service";
 import SearchResults from "../src/components/SearchResults";
 import userEvent from "@testing-library/user-event";
 import { MantineProvider } from "@mantine/core";
+import MapContainer from "../src/components/MapContainer";
+import APIProviderWrapper from "../src/components/APIProviderWrapper";
 
 vi.mock("../src/services/accommodation.service");
+vi.mock("../src/components/MapContainer", () => ({
+  __esModule: true,
+  default: vi.fn(),
+}));
+vi.mock("../src/components/APIProviderWrapper", () => ({
+  __esModule: true,
+  default: ({ children }) => <div>{children}</div>,
+}));
 
 const renderSearchResults = (
   initialEntries = [
@@ -31,13 +41,33 @@ describe("SearchResults Component", () => {
           id: 1,
           title: "Paris Hotel",
           bubbleRating: {
-            count: "4",
+            count: 4,
             rating: 3.5,
           },
           priceForDisplay: "$100",
+          cardPhotos: [
+            { sizes: { urlTemplate: "https://example.com/photo1.jpg" } },
+            { sizes: { urlTemplate: "https://example.com/photo2.jpg" } },
+          ],
+          secondaryInfo: "Central location",
+        },
+        {
+          id: 2,
+          title: "Eiffel Tower Hotel",
+          bubbleRating: {
+            count: 8,
+            rating: 4.5,
+          },
+          priceForDisplay: "$150",
+          cardPhotos: [
+            { sizes: { urlTemplate: "https://example.com/photo3.jpg" } },
+            { sizes: { urlTemplate: "https://example.com/photo4.jpg" } },
+          ],
+          secondaryInfo: "Near Eiffel Tower",
         },
       ],
     });
+
     renderSearchResults();
   });
 
@@ -74,9 +104,31 @@ describe("SearchResults Component", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Paris Hotel")).toBeInTheDocument();
+      expect(screen.getByText("Eiffel Tower Hotel")).toBeInTheDocument();
       expect(screen.getByText("Search Results for Paris")).toBeInTheDocument();
       expect(screen.getByText("£100")).toBeInTheDocument();
+      expect(screen.getByText("£150")).toBeInTheDocument();
       expect(screen.getByText("3.5 (4 reviews)")).toBeInTheDocument();
+      expect(screen.getByText("4.5 (8 reviews)")).toBeInTheDocument();
+    });
+  });
+
+  it("should open the modal with hotel details when a marker is clicked", async () => {
+    const marker = {
+      id: 1,
+      cardPhotos: [
+        { sizes: { urlTemplate: "https://example.com/photo1.jpg" } },
+      ],
+    };
+    MapContainer.mockImplementation(({ onMarkerClick }) => (
+      <div onClick={() => onMarkerClick(marker)}>Mocked Map</div>
+    ));
+
+    const map = await screen.findByText("Mocked Map");
+    userEvent.click(map);
+
+    await waitFor(() => {
+      expect(screen.getByText("Paris Hotel")).toBeInTheDocument();
     });
   });
 });

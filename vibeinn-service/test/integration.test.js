@@ -12,6 +12,10 @@ import User from "../src/models/User.js";
 import AccommodationController from "../src/controllers/AccommodationController.js";
 import AccommodationRoutes from "../src/routes/accomRoutes.js";
 import Proxy from "../src/server/proxy.js";
+import ReviewController from "../src/controllers/ReviewController.js";
+import ReviewService from "../src/services/reviewService.js";
+import ReviewRoutes from "../src/routes/reviewRoutes.js";
+import jwt from "jsonwebtoken";
 
 use(chaiExclude);
 
@@ -21,10 +25,12 @@ describe("Intergration Tests", () => {
   let database;
   let authService;
   let proxy;
+  let reviewService;
 
   before(async () => {
     Config.load();
     proxy = new Proxy();
+
     const accommodationController = new AccommodationController(proxy);
     const accommodationRoutes = new AccommodationRoutes(
       accommodationController
@@ -32,11 +38,20 @@ describe("Intergration Tests", () => {
 
     const { PORT, HOST, DB_URI } = process.env;
     authService = new UserAuthenticationService();
+    reviewService = new ReviewService();
+    const reviewController = new ReviewController(reviewService);
     const authController = new AuthController(authService);
     const authRoutes = new AuthRoutes(authController);
+    const reviewRoutes = new ReviewRoutes(reviewController);
     database = new Database(DB_URI);
     await database.connect();
-    server = new Server(PORT, HOST, authRoutes, accommodationRoutes);
+    server = new Server(
+      PORT,
+      HOST,
+      authRoutes,
+      accommodationRoutes,
+      reviewRoutes
+    );
 
     server.start();
     request = supertest(server.getApp());
@@ -373,6 +388,66 @@ describe("Intergration Tests", () => {
           "error",
           "Failed to analyse sentiment"
         );
+      });
+    });
+  });
+
+  describe("Review Integration Tests", () => {
+    describe("POST /api/review/submit", () => {
+      let submitReviewStub;
+      let token;
+
+      beforeEach(async () => {
+        token = jwt.sign({ id: 1 }, process.env.JWT_SECRET);
+        submitReviewStub = sinon.stub(reviewService, "submitReview");
+      });
+
+      afterEach(() => {
+        submitReviewStub.restore();
+      });
+
+      it("should successfully submit a review with valid details", async () => {
+        submitReviewStub.resolves({
+          id: 1,
+          userId: 1,
+          accommodationId: 1,
+          text: "Test Review",
+          publishedDate: new Date(),
+        });
+
+        const res = await request
+          .post("/api/review/submit")
+          .set("x-access-token", token)
+          .send({ reviewText: "Test Review", accommodationId: "1" });
+
+        expect(res.status).to.equal(201);
+        expect(res.body).to.have.property(
+          "message",
+          "Review submitted successfully"
+        );
+        expect(res.body.review).to.have.property("text", "Test Review");
+      });
+
+      it("should return a validation error if required fields are missing", async () => {
+        const res = await request
+          .post("/api/review/submit")
+          .set("x-access-token", token)
+          .send({});
+
+        expect(res.status).to.equal(422);
+        expect(res.body).to.have.property("error", "Validation failed");
+      });
+
+      it("should return a 500 error if the review submission fails", async () => {
+        submitReviewStub.rejects(new Error("Failed to submit review"));
+
+        const res = await request
+          .post("/api/review/submit")
+          .set("x-access-token", token)
+          .send({ reviewText: "Test Review", accommodationId: "1" });
+
+        expect(res.status).to.equal(500);
+        expect(res.body).to.have.property("message", "Failed to submit review");
       });
     });
   });

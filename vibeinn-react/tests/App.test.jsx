@@ -7,6 +7,15 @@ import accommService from "../src/services/accommodation.service";
 import { MantineProvider } from "@mantine/core";
 
 vi.mock("../src/services/accommodation.service");
+vi.mock("@xenova/transformers", () => ({
+  pipeline: vi
+    .fn()
+    .mockResolvedValue((text) => [{ label: "POSITIVE", score: 0.9 }]),
+  env: {
+    allowLocalModels: false,
+    useBrowserCache: false,
+  },
+}));
 
 describe("App", () => {
   it("should render the App", () => {

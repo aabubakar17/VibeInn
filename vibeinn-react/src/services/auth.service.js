@@ -19,6 +19,11 @@ const login = async (email, password) => {
   }
 };
 
+const isLoggedIn = () => {
+  // Check if token exists in localStorage
+  return !!localStorage.getItem(`user`);
+};
+
 const register = async (firstName, lastName, email, password) => {
   try {
     const response = await axios.post(`${API_URL_AUTH}/register`, {
@@ -46,6 +51,7 @@ const authService = {
   login,
   register,
   logout,
+  isLoggedIn,
 };
 
 export default authService;

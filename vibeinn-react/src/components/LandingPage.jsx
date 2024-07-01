@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
   Container,
@@ -27,7 +27,6 @@ const LandingPage = () => {
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-
         <Container className="text-center mt-24">
           <Title className="text-4xl font-bold">
             Discover the Vibe of Your Next Stay

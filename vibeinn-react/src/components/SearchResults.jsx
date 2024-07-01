@@ -8,7 +8,6 @@ import accommService from "../services/accommodation.service";
 import MapContainer from "./MapContainer";
 import { Carousel } from "react-responsive-carousel";
 import APIProviderWrapper from "./APIProviderWrapper";
-import getAverageSentiment from "./util/getAverageSentiment";
 import { useNavigate } from "react-router-dom";
 
 const SearchResults = () => {
@@ -22,25 +21,12 @@ const SearchResults = () => {
   const [hoveredHotelId, setHoveredHotelId] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
-  const [averageSentiments, setAverageSentiments] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchHotels();
   }, [searchLocation, checkIn, checkOut]);
-
-  useEffect(() => {
-    if (hotels.length > 0) {
-      getAverageSentiment(hotels, checkIn, checkOut)
-        .then((sentiments) => {
-          setAverageSentiments(sentiments);
-        })
-        .catch((error) => {
-          console.error("Error getting sentiments:", error);
-        });
-    }
-  }, [hotels, checkIn, checkOut]);
 
   const fetchHotels = () => {
     accommService
@@ -205,22 +191,18 @@ const SearchResults = () => {
                       {hotel.secondaryInfo}
                     </Text>
                   )}
-                  {/* Display Average Sentiment */}
-                  {averageSentiments[index] !== undefined && (
-                    <Text className="text-sm mt-2 w-22 text ">
-                      <span className="inline-block bg-blue-500 text-white text-center font-bold py-1 px-3 rounded-lg float-right">
-                        Vibe Score:
-                        <br />
-                        {averageSentiments[index]}
-                      </span>
-                    </Text>
-                  )}
+
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-xl font-bold">
                       {hotel.priceForDisplay?.replace("$", "£")}{" "}
                       <span className="text-sm text-gray-500">/ night</span>
                     </div>
-                    {/* <Button radius="md">Book now</Button> */}
+                    <Button
+                      radius="md"
+                      onClick={() => handleCardClick(hotel.id)}
+                    >
+                      See More
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -272,7 +254,12 @@ const SearchResults = () => {
                 {selectedHotel.priceForDisplay.replace("$", "£")}{" "}
                 <span className="text-sm text-gray-500">/ night</span>
               </div>
-              <Button radius="md">Book now</Button>
+              <Button
+                radius="md"
+                onClick={() => handleCardClick(selectedHotel.id)}
+              >
+                See More
+              </Button>
             </div>
           </div>
         </Modal>

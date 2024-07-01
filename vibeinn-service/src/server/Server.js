@@ -8,13 +8,15 @@ export default class Server {
   #router;
   #accommRouter;
   #server;
+  #reviewRouter;
 
-  constructor(port, host, router, accommRouter) {
+  constructor(port, host, router, accommRouter, reviewRouter) {
     this.#app = express();
     this.#port = port;
     this.#host = host;
     this.#router = router;
     this.#accommRouter = accommRouter;
+    this.#reviewRouter = reviewRouter;
     this.#app.use(
       cors({
         origin: [
@@ -42,6 +44,10 @@ export default class Server {
     this.#app.use(
       this.#accommRouter.getRouteStartPoint(),
       this.#accommRouter.getRouter()
+    );
+    this.#app.use(
+      this.#reviewRouter.getRouteStartPoint(),
+      this.#reviewRouter.getRouter()
     );
     this.#server = this.#app.listen(this.#port, this.#host, () => {
       console.log(`Server is listening on http://${this.#host}:${this.#port}`);

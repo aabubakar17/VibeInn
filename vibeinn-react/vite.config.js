@@ -9,6 +9,16 @@ export default defineConfig({
     setupFiles: ["./tests/config/setup.js"],
     testMatch: ["./tests/**/*.test.jsx$?"],
     globals: true,
-    exclude: ["**/node_modules/**", "/*.config.js/**"],
+    coverage: {
+      provider: "v8", // or 'c8'
+      reporter: ["text", "json", "html"], // or other reporters you prefer
+      exclude: [
+        "postcss.config.js",
+        "tailwind.config.js",
+        "src/main.jsx",
+        // Add more patterns to exclude other files
+      ],
+    },
+    exclude: ["**/node_modules/**", "**/*.config.js"],
   },
 });
