@@ -11,11 +11,6 @@ export default class Server {
 
   constructor(port, host, router, accommRouter) {
     this.#app = express();
-    this.#port = port;
-    this.#host = host;
-    this.#router = router;
-    this.#accommRouter = accommRouter;
-
     this.#app.use(
       cors({
         origin: [
@@ -24,9 +19,18 @@ export default class Server {
           "http://vibeinnservice.onrender.com",
         ],
         credentials: true,
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        allowedHeaders:
+          "Origin,X-Requested-With,Content-Type,Accept,Authorization",
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
       })
     );
     this.#app.use(express.json());
+    this.#port = port;
+    this.#host = host;
+    this.#router = router;
+    this.#accommRouter = accommRouter;
   }
 
   getApp = () => {
