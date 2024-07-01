@@ -17,4 +17,19 @@ export default class ReviewService {
       throw new Error("Error saving review");
     }
   }
+
+  async updateReview(userId, reviewId, reviewText) {
+    try {
+      const updatedReview = await Review.findOneAndUpdate(
+        { _id: reviewId, userId },
+        { text: reviewText },
+        { new: true }
+      );
+
+      return updatedReview;
+    } catch (error) {
+      console.error("Error in ReviewService updateReview:", error);
+      throw new Error("Error updating review");
+    }
+  }
 }

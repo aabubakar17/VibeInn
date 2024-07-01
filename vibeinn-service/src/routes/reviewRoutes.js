@@ -30,6 +30,15 @@ export default class ReviewRoutes {
       ],
       this.#controller.submitReview
     );
+    this.#router.put(
+      "/update", // PUT /api/review/update
+      [this.#AuthMiddleware.verify],
+      [
+        body("reviewText").notEmpty().isString(),
+        body("reviewId").notEmpty().isString(),
+      ],
+      this.#controller.updateReview
+    );
   };
 
   getRouter = () => {

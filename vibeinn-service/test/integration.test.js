@@ -450,5 +450,63 @@ describe("Intergration Tests", () => {
         expect(res.body).to.have.property("message", "Failed to submit review");
       });
     });
+
+    describe("PUT /api/review/update", () => {
+      let updateReviewStub;
+      let token;
+
+      beforeEach(async () => {
+        token = jwt.sign({ id: 1 }, process.env.JWT_SECRET);
+        updateReviewStub = sinon.stub(reviewService, "updateReview");
+      });
+
+      afterEach(() => {
+        updateReviewStub.restore();
+      });
+
+      it("should successfully update a review with valid details", async () => {
+        updateReviewStub.resolves({
+          id: 1,
+          userId: 1,
+          accommodationId: 1,
+          text: "Updated Review",
+          publishedDate: new Date(),
+        });
+
+        const res = await request
+          .put("/api/review/update")
+          .set("x-access-token", token)
+          .send({ reviewText: "Updated Review", reviewId: "1" });
+
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property(
+          "message",
+          "Review updated successfully"
+        );
+        expect(res.body.review).to.have.property("text", "Updated Review");
+      });
+
+      it("should return a validation error if required fields are missing", async () => {
+        const res = await request
+          .put("/api/review/update")
+          .set("x-access-token", token)
+          .send({});
+
+        expect(res.status).to.equal(422);
+        expect(res.body).to.have.property("error", "Validation failed");
+      });
+
+      it("should return a 500 error if the review update fails", async () => {
+        updateReviewStub.rejects(new Error("Failed to update review"));
+
+        const res = await request
+          .put("/api/review/update")
+          .set("x-access-token", token)
+          .send({ reviewText: "Updated Review", reviewId: "1" });
+
+        expect(res.status).to.equal(500);
+        expect(res.body).to.have.property("message", "Failed to update review");
+      });
+    });
   });
 });

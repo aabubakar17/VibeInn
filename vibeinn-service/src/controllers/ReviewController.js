@@ -42,4 +42,30 @@ export default class ReviewController {
       });
     }
   };
+
+  updateReview = async (req, res) => {
+    const errors = validationResult(req);
+    this.handleValidationError(res, errors);
+
+    try {
+      const { reviewText, reviewId } = req.body;
+      const userId = req.user.id;
+
+      const updatedReview = await this.#service.updateReview(
+        userId,
+        reviewId,
+        reviewText
+      );
+
+      res.status(200).json({
+        message: "Review updated successfully",
+        review: updatedReview,
+      });
+    } catch (error) {
+      console.error("Error updating review:", error);
+      res.status(500).json({
+        message: error.message,
+      });
+    }
+  };
 }
