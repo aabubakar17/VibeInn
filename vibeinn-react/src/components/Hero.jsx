@@ -47,6 +47,7 @@ const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
                   useRange={false}
                   value={value}
                   onChange={setValue}
+                  popoverDirection="down"
                   placeholder="Check-in ~ Check-out"
                   displayFormat={`MMM-DD`}
                   className="w-full e md:max-w-none border-black rounded-lg px-4 py-1.5"

@@ -1,47 +1,66 @@
 import { Router } from "express";
-import { query, param, body } from "express-validator";
-import AccommodationController from "../controllers/AccommodationController.js";
+import { body } from "express-validator";
+import AuthController from "../controllers/authController.js";
+import AuthMiddleware from "../middlewares/authMiddleware.js";
 
-export default class AccommodationRoutes {
+export default class AuthRoutes {
   #controller;
   #router;
   #routeStartPoint;
+  #AuthMiddleware;
 
   constructor(
-    controller = new AccommodationController(),
-    routeStartPoint = "/api"
+    controller = new AuthController(),
+    routeStartPoint = "/api/auth"
   ) {
     this.#controller = controller;
     this.#routeStartPoint = routeStartPoint;
     this.#router = Router();
+    this.#AuthMiddleware = new AuthMiddleware();
     this.#initialiseRoutes();
   }
 
   #initialiseRoutes = () => {
-    this.#router.get(
-      "/hotels",
+    this.#router.post(
+      "/login",
       [
-        query("location").notEmpty().isString(),
-        query("checkIn").notEmpty().isString(),
-        query("checkOut").notEmpty().isString(),
+        body(`email`).notEmpty().isString(),
+        body(`password`).notEmpty().isString(),
       ],
-      this.#controller.searchHotels
-    );
-
-    this.#router.get(
-      "/hotel/:id",
-      [
-        param("id").notEmpty().isString(),
-        query("checkIn").notEmpty().isString(),
-        query("checkOut").notEmpty().isString(),
-      ],
-      this.#controller.getHotelReviews
+      this.#controller.loginController
     );
 
     this.#router.post(
-      "/sentiment",
-      [body("reviewText").notEmpty().isArray()],
-      this.#controller.getSentiment
+      "/register",
+      [
+        body("firstName").notEmpty().isString(),
+        body("lastName").notEmpty().isString(),
+        body(`email`).notEmpty().isString(),
+        body(`password`).notEmpty().isString(),
+      ],
+      this.#controller.registerController
+    );
+
+    this.#router.put(
+      "/update-password",
+      [this.#AuthMiddleware.verify],
+      [
+        body("currentPassword").notEmpty().isString(),
+        body("newPassword").notEmpty().isString(),
+      ],
+      this.#controller.updatePassword
+    );
+
+    this.#router.post(
+      "/user",
+      [this.#AuthMiddleware.verify, this.#AuthMiddleware.isUser],
+      this.#controller.allowAccess
+    );
+
+    this.#router.post(
+      "/admin",
+      [this.#AuthMiddleware.verify, this.#AuthMiddleware.isAdmin],
+      this.#controller.allowAccess
     );
   };
 

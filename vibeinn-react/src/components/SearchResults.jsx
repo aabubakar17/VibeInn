@@ -9,6 +9,7 @@ import MapContainer from "./MapContainer";
 import { Carousel } from "react-responsive-carousel";
 import APIProviderWrapper from "./APIProviderWrapper";
 import getAverageSentiment from "./util/getAverageSentiment";
+import { useNavigate } from "react-router-dom";
 
 const SearchResults = () => {
   const location = useLocation();
@@ -22,6 +23,8 @@ const SearchResults = () => {
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [averageSentiments, setAverageSentiments] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHotels();
@@ -67,6 +70,12 @@ const SearchResults = () => {
 
   const closeSearchModal = () => {
     setSearchModalOpen(false);
+  };
+
+  const handleCardClick = (hotelId) => {
+    navigate(
+      `/hotelpage/${hotelId}?location=${searchLocation}&checkIn=${checkIn}&checkOut=${checkOut}`
+    );
   };
 
   return (
@@ -175,9 +184,15 @@ const SearchResults = () => {
                 </Carousel>
 
                 <div className="mt-1 p-6">
-                  <Text className="font-bold text-xl">
+                  <Text
+                    as="a"
+                    href="#"
+                    className="font-bold text-xl cursor-pointer"
+                    onClick={() => handleCardClick(hotel.id)}
+                  >
                     {hotel.title?.trim().replace(/^\d+\.\s+/, "")}
                   </Text>
+
                   <div className="flex items-center mt-2">
                     <IconStar style={{ width: rem(16), height: rem(16) }} />
                     <Text className="text-xs font-bold ml-1">

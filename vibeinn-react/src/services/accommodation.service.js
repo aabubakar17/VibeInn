@@ -20,6 +20,7 @@ const getHotelDetails = async (id, checkIn, checkOut) => {
       `${API_URL_ACCOMM}/hotel/${id}?checkIn=${checkIn}&checkOut=${checkOut}`
     );
 
+    console.log(response.data.data);
     if (response.data.data) {
       return {
         title: response.data.data.title,
@@ -30,6 +31,7 @@ const getHotelDetails = async (id, checkIn, checkOut) => {
         photos: response.data.data.photos,
         rating: response.data.data.rating,
         numberReviews: response.data.data.numberReviews,
+        amenities: response.data.data.amenitiesScreen,
       };
     } else {
       return null;

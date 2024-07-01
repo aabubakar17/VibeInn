@@ -7,6 +7,7 @@ import LandingPage from "./components/LandingPage";
 import SearchResults from "./components/SearchResults";
 import { MantineProvider } from "@mantine/core";
 import { useState } from "react";
+import HotelPage from "./components/HotelPage";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SearchResults />} />
+          <Route path="/hotelpage/:id" element={<HotelPage />} />
         </Routes>
       </main>
       <Footer />

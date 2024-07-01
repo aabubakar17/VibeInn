@@ -56,8 +56,8 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
     const averageSentiments = sentiments.map((hotelSentiments) => {
       if (hotelSentiments && hotelSentiments.sentimentScore.length > 0) {
         const sum = hotelSentiments.sentimentScore.reduce((a, b) => a + b, 0);
-        console.log(sum);
-        return sum / hotelSentiments.sentimentScore.length;
+        const average = sum / hotelSentiments.sentimentScore.length;
+        return Math.round(average);
       } else {
         return null;
       }
