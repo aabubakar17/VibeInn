@@ -11,6 +11,10 @@ export default class Server {
 
   constructor(port, host, router, accommRouter) {
     this.#app = express();
+    this.#port = port;
+    this.#host = host;
+    this.#router = router;
+    this.#accommRouter = accommRouter;
     this.#app.use(
       cors({
         origin: [
@@ -27,10 +31,6 @@ export default class Server {
       })
     );
     this.#app.use(express.json());
-    this.#port = port;
-    this.#host = host;
-    this.#router = router;
-    this.#accommRouter = accommRouter;
   }
 
   getApp = () => {

@@ -27,6 +27,7 @@ const HotelPage = () => {
           checkOut
         );
         setHotelDetails(details);
+        console.log(details.reviews.content);
         fetchSentiments(details.reviews.content);
       } catch (error) {
         console.error("Error fetching hotel details:", error);
@@ -41,6 +42,7 @@ const HotelPage = () => {
     try {
       const sentimentMap = {};
       for (const review of reviews) {
+        console.log(review.text);
         const sentiment = await sentimentService.getSentiment(review.text);
         sentimentMap[review.id] = sentiment;
       }

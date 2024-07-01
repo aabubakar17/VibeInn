@@ -18,7 +18,7 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
             `Error fetching details for hotel ID ${hotel.id}:`,
             error
           );
-          return { content: [] };
+          return { content: [] }; // Handle empty response gracefully
         }
       })
     );
@@ -28,16 +28,12 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
       (hotelReviews) => hotelReviews.content.length > 0
     );
 
-    console.log(filteredReviews);
     // Extract review texts from the filtered reviews
     const allReviewTexts = filteredReviews.map((hotelReviews) =>
       hotelReviews.content.map((review) => review.text)
     );
 
-    /* console.log(allReviewTexts[0]); */
-
     // Get sentiments for the extracted reviews
-
     const sentiments = await Promise.all(
       allReviewTexts.map(async (hotelReviews) => {
         try {
@@ -45,12 +41,10 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
           return result;
         } catch (error) {
           console.error("Error getting sentiment:", error);
-          return null;
+          return { sentimentScore: [] }; // Handle empty sentiment response
         }
       })
     );
-
-    /*     console.log(typeof sentiments[0].sentimentScore[0]); */
 
     // Calculate average sentiment for each hotel
     const averageSentiments = sentiments.map((hotelSentiments) => {
@@ -59,11 +53,9 @@ export default async function getAverageSentiment(hotels, checkIn, checkOut) {
         const average = sum / hotelSentiments.sentimentScore.length;
         return Math.round(average);
       } else {
-        return null;
+        return null; // Handle cases where sentiment score is empty
       }
     });
-
-    console.log(averageSentiments);
 
     return averageSentiments;
   } catch (error) {
