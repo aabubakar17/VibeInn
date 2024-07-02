@@ -46,6 +46,8 @@ describe("UserAuthenticationService", () => {
     it("should return a token and user if the login is successful", async () => {
       const user = {
         _id: "id",
+        firstName: "Test",
+        lastName: "User",
         email: "example@123.com",
         password: "hashedpassword",
         role: "user",
@@ -58,7 +60,13 @@ describe("UserAuthenticationService", () => {
 
       expect(result).to.deep.equal({
         token: "token",
-        user: { id: "id", email: "example@123.com", role: "user" },
+        user: {
+          id: "id",
+          email: "example@123.com",
+          role: "user",
+          firstName: "Test",
+          lastName: "User",
+        },
       });
     });
   });

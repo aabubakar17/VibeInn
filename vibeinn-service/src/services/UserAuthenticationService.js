@@ -21,7 +21,13 @@ export default class UserAuthenticationService {
     );
     return {
       token,
-      user: { id: user._id, email: user.email, role: user.role },
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
     };
   }
 
