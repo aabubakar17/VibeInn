@@ -24,6 +24,10 @@ const isLoggedIn = () => {
   return !!localStorage.getItem(`user`);
 };
 
+const getCurrentUser = () => {
+  return JSON.parse(localStorage.getItem(`user`));
+};
+
 const register = async (firstName, lastName, email, password) => {
   try {
     const response = await axios.post(`${API_URL_AUTH}/register`, {
@@ -52,6 +56,7 @@ const authService = {
   register,
   logout,
   isLoggedIn,
+  getCurrentUser,
 };
 
 export default authService;

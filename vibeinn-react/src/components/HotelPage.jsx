@@ -50,7 +50,7 @@ const HotelPage = ({ loggedIn }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const loggedInUser = await authService.isLoggedIn();
+        const loggedInUser = await authService.getCurrentUser();
         setUser(loggedInUser);
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -101,6 +101,7 @@ const HotelPage = ({ loggedIn }) => {
 
   // Handle review submission
   const handleSubmitReview = async (e) => {
+    console.log(user);
     e.preventDefault();
     if (!loggedIn) {
       setLoginModal(true);
@@ -108,7 +109,7 @@ const HotelPage = ({ loggedIn }) => {
       try {
         if (reviewText) {
           const newReview = {
-            user: user.firstName + user.lastName, // Use logged-in user's name
+            user: user.user.firstName + user.user.lastName, // Use logged-in user's name
             publishedDate: "Written " + dayjs().format("DD/MM/YY"), // Use current date/time
             text: reviewText,
             userProfile: {
@@ -119,7 +120,7 @@ const HotelPage = ({ loggedIn }) => {
           };
 
           // Send the new review to the server
-          await reviewService.submitReview(id, newReview);
+          await reviewService.submitReview(newReview.text, id);
 
           // Update hotelDetails with the new review
           const updatedReviews = [...hotelDetails.reviews.content, newReview];

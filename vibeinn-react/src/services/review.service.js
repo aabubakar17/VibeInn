@@ -1,18 +1,20 @@
 import axios from "axios";
+
 const API_URL_REVIEW = import.meta.env.VITE_REACT_APP_API_URL_ACCOMM;
 const submitReview = async (reviewText, hotelId) => {
+  console.log(reviewText, hotelId);
   try {
-    const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
-    console.log("Token:", token);
+    const user = JSON.parse(localStorage.getItem("user")); // Assuming the token is stored in localStorage
+    console.log(user);
     const response = await axios.post(
       `${API_URL_REVIEW}/review/submit`,
       {
-        reviewText,
+        reviewText: reviewText,
         accommodationId: hotelId,
       },
       {
         headers: {
-          "x-access-token": token,
+          "x-access-token": user.token,
         },
       }
     );
