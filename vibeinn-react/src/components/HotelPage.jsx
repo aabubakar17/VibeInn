@@ -10,6 +10,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { getAverageSentiment } from "./util/getAverageSentiment";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import reviewService from "../services/review.service";
 
 const HotelPage = ({ loggedIn }) => {
   const { id } = useParams();
@@ -49,7 +50,7 @@ const HotelPage = ({ loggedIn }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const loggedInUser = await authService.getCurrentUser();
+        const loggedInUser = await authService.isLoggedIn();
         setUser(loggedInUser);
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -107,7 +108,7 @@ const HotelPage = ({ loggedIn }) => {
       try {
         if (reviewText) {
           const newReview = {
-            user: user.name, // Use logged-in user's name
+            user: user.firstName + user.lastName, // Use logged-in user's name
             publishedDate: "Written " + dayjs().format("DD/MM/YY"), // Use current date/time
             text: reviewText,
             userProfile: {
@@ -118,7 +119,7 @@ const HotelPage = ({ loggedIn }) => {
           };
 
           // Send the new review to the server
-          await accommService.submitReview(id, newReview);
+          await reviewService.submitReview(id, newReview);
 
           // Update hotelDetails with the new review
           const updatedReviews = [...hotelDetails.reviews.content, newReview];

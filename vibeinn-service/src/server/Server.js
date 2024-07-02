@@ -27,7 +27,7 @@ export default class Server {
         credentials: true,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
         allowedHeaders:
-          "Origin,X-Requested-With,Content-Type,Accept,Authorization",
+          "Origin,X-Requested-With,Content-Type,Accept,Authorization, x-access-token",
         preflightContinue: false,
         optionsSuccessStatus: 204,
       })
