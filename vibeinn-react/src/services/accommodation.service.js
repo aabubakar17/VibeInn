@@ -24,7 +24,7 @@ const getHotelDetails = async (id, checkIn, checkOut) => {
     if (response.data.data) {
       return {
         title: response.data.data.title,
-        location: response.data.data.geoPoint,
+        location: response.data.data.location.address,
         reviews: response.data.data.reviews,
         about: response.data.data.about,
         tags: response.data.data.tags,
@@ -32,6 +32,7 @@ const getHotelDetails = async (id, checkIn, checkOut) => {
         rating: response.data.data.rating,
         numberReviews: response.data.data.numberReviews,
         amenities: response.data.data.amenitiesScreen,
+        hotelId: id,
       };
     } else {
       return null;

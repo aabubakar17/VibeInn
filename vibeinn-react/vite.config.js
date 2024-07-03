@@ -16,6 +16,7 @@ export default defineConfig({
         "postcss.config.js",
         "tailwind.config.js",
         "src/main.jsx",
+        ".eslintrc.cjs",
         // Add more patterns to exclude other files
       ],
     },

@@ -50,6 +50,7 @@ const Login = ({ loggedIn, setLoggedIn }) => {
         setLoggedIn(true);
         console.log("response:", response);
         setMessage("");
+        navigate("/dashboard");
       } else {
         setMessage("Login failed. Please try again.");
       }
@@ -117,6 +118,7 @@ const Login = ({ loggedIn, setLoggedIn }) => {
           )}
           <button
             className="mt-4 bg-slate-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
+            onClick={handleSubmit}
             type="submit"
           >
             Login

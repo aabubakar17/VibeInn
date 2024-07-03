@@ -60,8 +60,11 @@ describe("accommodationService", () => {
       const response = {
         data: {
           data: {
+            hotelId: id,
             title: "Paris Hotel",
-            geoPoint: "48.8566, 2.3522",
+            location: {
+              address: "Paris",
+            },
             reviews: {
               content: [
                 {
@@ -86,17 +89,22 @@ describe("accommodationService", () => {
 
       // Assert
       expect(result).toEqual({
-        title: "Paris Hotel",
-        location: "48.8566, 2.3522",
-        reviews: {
-          content: [{ text: "Great hotel!" }],
-        },
         about: "A great hotel in Paris",
-        tags: ["Paris", "Hotel"],
+        amenities: ["Free WiFi", "Breakfast"],
+        hotelId: 1,
+        location: "Paris",
+        numberReviews: 100,
         photos: ["photo1.jpg", "photo2.jpg"],
         rating: 4.5,
-        numberReviews: 100,
-        amenities: ["Free WiFi", "Breakfast"],
+        reviews: {
+          content: [
+            {
+              text: "Great hotel!",
+            },
+          ],
+        },
+        tags: ["Paris", "Hotel"],
+        title: "Paris Hotel",
       });
     });
   });

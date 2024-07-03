@@ -195,7 +195,6 @@ const SearchResults = () => {
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-xl font-bold">
                       {hotel.priceForDisplay?.replace("$", "£")}{" "}
-                      <span className="text-sm text-gray-500">/ night</span>
                     </div>
                     <Button
                       radius="md"
@@ -220,7 +219,7 @@ const SearchResults = () => {
             infiniteLoop
             className="carousel"
           >
-            {selectedHotel.cardPhotos.map((photo, index) => (
+            {selectedHotel.cardPhotos?.map((photo, index) => (
               <div key={index}>
                 <img
                   src={photo.sizes.urlTemplate
@@ -252,7 +251,6 @@ const SearchResults = () => {
             <div className="flex justify-between items-center mt-4">
               <div className="text-xl font-bold">
                 {selectedHotel.priceForDisplay.replace("$", "£")}{" "}
-                <span className="text-sm text-gray-500">/ night</span>
               </div>
               <Button
                 radius="md"

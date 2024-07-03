@@ -8,6 +8,7 @@ import SearchResults from "./components/SearchResults";
 import { MantineProvider } from "@mantine/core";
 import { useState } from "react";
 import HotelPage from "./components/HotelPage";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -24,6 +25,7 @@ function App() {
             path="/hotelpage/:id"
             element={<HotelPage loggedIn={loggedIn} />}
           />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
       <Footer />

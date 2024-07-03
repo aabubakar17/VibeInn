@@ -84,6 +84,16 @@ const Navbar = ({ loggedIn, setLoggedIn }) => {
               )}
             </li>
             <li>
+              {loggedIn && (
+                <Link
+                  to="/dashboard"
+                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0  md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                >
+                  Dashboard
+                </Link>
+              )}
+            </li>
+            <li>
               <Link
                 to="/register"
                 className="mt-4 bg-gradient-to-r from-pink-500 to-orange-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider md:mt-0 md:ml-4"
