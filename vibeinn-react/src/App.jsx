@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Navbar from "./components/Navbar";
@@ -12,12 +12,22 @@ import Dashboard from "./components/Dashboard";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const location = useLocation();
+
+  // Check if the current location is "/"
+  const isHomePage = location.pathname === "/";
+
   return (
     <MantineProvider>
       <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
-      <main className="flex-grow  overflow-hidden bg-gray-100">
+      <main className="flex-grow overflow-hidden ">
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="/"
+            element={
+              <LandingPage loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+            }
+          />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SearchResults />} />
@@ -28,7 +38,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
-      <Footer />
+      {/* Render Footer only if it's not the homepage */}
+      {!isHomePage && <Footer />}
     </MantineProvider>
   );
 }

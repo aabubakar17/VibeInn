@@ -92,18 +92,7 @@ const Login = ({ loggedIn, setLoggedIn }) => {
           onChange={handlePasswordChange}
           value={password}
         />
-        <div className="mt-4 flex justify-between font-semibold text-sm">
-          <label className="flex text-slate-500 hover:text-slate-600 cursor-pointer">
-            <input className="mr-1" type="checkbox" />
-            <span>Remember Me</span>
-          </label>
-          <a
-            className="text-black hover:text-gray-600 hover:underline hover:underline-offset-4"
-            href="#"
-          >
-            Forgot Password?
-          </a>
-        </div>
+        <div className="mt-4 flex justify-between font-semibold text-sm"></div>
         <div className="text-center md:text-left">
           {message && (
             <Alert
@@ -117,7 +106,7 @@ const Login = ({ loggedIn, setLoggedIn }) => {
             </Alert>
           )}
           <button
-            className="mt-4 bg-slate-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
+            className="mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
             onClick={handleSubmit}
             type="submit"
           >

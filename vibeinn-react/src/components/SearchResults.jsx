@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Title, Card, Text, Button, rem, Modal } from "@mantine/core";
+import { Title, Card, Text, Button, rem, Modal, Loader } from "@mantine/core"; // Import Loader from Mantine
 import Hero from "./Hero";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { IconStar } from "@tabler/icons-react";
@@ -9,6 +9,7 @@ import MapContainer from "./MapContainer";
 import { Carousel } from "react-responsive-carousel";
 import APIProviderWrapper from "./APIProviderWrapper";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs"; // Import dayjs for date manipulation
 
 const SearchResults = () => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const SearchResults = () => {
   const [hoveredHotelId, setHoveredHotelId] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   const navigate = useNavigate();
 
@@ -39,9 +41,11 @@ const SearchResults = () => {
         const limitedHotels = uniqueHotels.slice(0, 15);
 
         setHotels(limitedHotels);
+        setLoading(false); // Set loading to false once data is fetched
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false); // Make sure to handle loading state on error as well
       });
   };
 
@@ -63,6 +67,22 @@ const SearchResults = () => {
       `/hotelpage/${hotelId}?location=${searchLocation}&checkIn=${checkIn}&checkOut=${checkOut}`
     );
   };
+
+  // Function to calculate number of nights
+  const calculateNights = (checkIn, checkOut) => {
+    const start = dayjs(checkIn);
+    const end = dayjs(checkOut);
+    return end.diff(start, "day");
+  };
+
+  // Show Loader while loading
+  if (loading) {
+    return (
+      <div className="min-h-screen  bg-white flex justify-center items-center ">
+        <Loader size={80} />
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col col-span-1">
@@ -122,7 +142,7 @@ const SearchResults = () => {
                 key={hotel.id}
                 radius="md"
                 padding="0"
-                className="rounded-xl bg-gray-100 transition ease-in-out duration-75 w-full hover:scale-105"
+                className="rounded-xl bg-transparent transition ease-in-out duration-75 w-full hover:scale-105"
                 onMouseEnter={() => setHoveredHotelId(hotel.id)}
                 onMouseLeave={() => setHoveredHotelId(null)}
               >
@@ -194,11 +214,18 @@ const SearchResults = () => {
 
                   <div className="flex justify-between items-center mt-4">
                     <div className="text-xl font-bold">
-                      {hotel.priceForDisplay?.replace("$", "£")}{" "}
+                      {hotel.priceForDisplay?.replace("$", "£")} /{" "}
+                      {calculateNights(checkIn, checkOut)}{" "}
+                      {calculateNights(checkIn, checkOut) === 1
+                        ? "night"
+                        : "nights"}
                     </div>
                     <Button
                       radius="md"
                       onClick={() => handleCardClick(hotel.id)}
+                      variant="gradient"
+                      gradient={{ deg: 133, from: "blue", to: "cyan" }}
+                      size="sm"
                     >
                       See More
                     </Button>
@@ -255,6 +282,9 @@ const SearchResults = () => {
               <Button
                 radius="md"
                 onClick={() => handleCardClick(selectedHotel.id)}
+                variant="gradient"
+                gradient={{ deg: 133, from: "blue", to: "cyan" }}
+                size="sm"
               >
                 See More
               </Button>

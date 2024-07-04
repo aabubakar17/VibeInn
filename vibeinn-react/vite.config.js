@@ -11,13 +11,12 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: "v8", // or 'c8'
-      reporter: ["text", "json", "html"], // or other reporters you prefer
+      reporter: ["text", "json", "html"],
       exclude: [
         "postcss.config.js",
         "tailwind.config.js",
         "src/main.jsx",
         ".eslintrc.cjs",
-        // Add more patterns to exclude other files
       ],
     },
     exclude: ["**/node_modules/**", "**/*.config.js"],

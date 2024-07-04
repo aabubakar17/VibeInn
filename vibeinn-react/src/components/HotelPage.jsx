@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Title, Text, Badge, Card, Modal, rem } from "@mantine/core";
+import { Title, Text, Badge, Card, Modal, rem, Loader } from "@mantine/core";
 import { Carousel } from "react-responsive-carousel";
 import { IconStar } from "@tabler/icons-react";
 import accommService from "../services/accommodation.service";
@@ -33,10 +33,9 @@ const HotelPage = ({ loggedIn }) => {
 
   // Function to fetch sentiments
   const fetchSentiments = async (hotelDetails) => {
-    console;
     console.log("Fetching sentiments...");
     try {
-      if (!hotelDetails) return;
+      /* setLoading(true); // Start loading */
 
       const hotelReviewsText = hotelDetails?.reviews?.content.map((review) =>
         review.text.replace(/<[^>]*>?/gm, "")
@@ -46,9 +45,11 @@ const HotelPage = ({ loggedIn }) => {
         review.text.replace(/<[^>]*>?/gm, "")
       );
 
-      if (!userReviewsText || !hotelReviewsText) return;
+      // If either reviews are not available, set them to empty array to avoid null errors
+      const hotelReviews = hotelReviewsText || [];
+      const userReviews = userReviewsText || [];
 
-      const combinedReviewText = [...hotelReviewsText, ...userReviewsText];
+      const combinedReviewText = [...hotelReviews, ...userReviews];
 
       const sentiment = await sentimentService.getSentiment(combinedReviewText);
       const average = getAverageSentiment(sentiment);
@@ -60,6 +61,10 @@ const HotelPage = ({ loggedIn }) => {
       console.log("Sentiments fetched:", sentiment, average);
     } catch (error) {
       console.error("Error fetching sentiment:", error);
+    } finally {
+      if (hotelDetails) {
+        setLoading(false); // Stop loading, whether successful or failed
+      }
     }
   };
 
@@ -73,7 +78,7 @@ const HotelPage = ({ loggedIn }) => {
 
         if (cachedHotelDetails && cachedHotelDetails.hotelId === id) {
           setHotelDetails(cachedHotelDetails);
-          fetchSentiments(cachedHotelDetails);
+          await fetchSentiments(cachedHotelDetails); // Ensure sentiments are fetched
         } else {
           const details = await accommService.getHotelDetails(
             id,
@@ -83,15 +88,13 @@ const HotelPage = ({ loggedIn }) => {
 
           if (details) {
             setHotelDetails(details);
-            fetchSentiments(details);
+            // Ensure sentiments are fetched
           }
 
           localStorage.setItem("hotelDetails", JSON.stringify(details));
         }
       } catch (error) {
         console.error("Error fetching hotel details:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchHotelDetails();
@@ -113,6 +116,11 @@ const HotelPage = ({ loggedIn }) => {
     }
   }, [loggedIn]);
 
+  useEffect(() => {
+    if (setHotelDetails) {
+      fetchSentiments(hotelDetails);
+    }
+  }, [hotelDetails]);
   // Fetch reviews by user ID when user state changes
   useEffect(() => {
     const fetchReviewsByUserId = async () => {
@@ -199,7 +207,16 @@ const HotelPage = ({ loggedIn }) => {
 
   // Loading state
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex flex-col justify-center items-center">
+        <div className="mb-10">
+          <Title>Calculating the vibe....</Title>
+        </div>
+        <div>
+          <Loader size={80} />
+        </div>
+      </div>
+    );
   }
 
   // Function to open modal with selected photo
@@ -224,7 +241,7 @@ const HotelPage = ({ loggedIn }) => {
 
   // Render the component
   return (
-    <div className="p-6 lg:mx-24">
+    <div className="min-h-screen p-6 lg:mx-24">
       {hotelDetails && (
         <>
           <div className="flex flex-col md:flex-row md:items-center mb-4">
@@ -232,7 +249,7 @@ const HotelPage = ({ loggedIn }) => {
               {hotelDetails.title}
             </Title>
             {averageSentiment && (
-              <Badge className="bg-blue-500 py-8 px-2 md:py-8 md:px-4 rounded-md text-xs md:text-sm text-white text-center mt-4 md:mt-0">
+              <Badge className="bg-gradient-to-r from-blue-500 to-cyan-500 py-8 px-2 md:py-8 md:px-4 rounded-md text-xs md:text-sm text-white text-center mt-4 md:mt-0">
                 Vibe Score <br /> {averageSentiment}
               </Badge>
             )}
@@ -250,16 +267,23 @@ const HotelPage = ({ loggedIn }) => {
               className="md:col-span-1"
               onClick={() => openModal(hotelDetails.photos[0])}
             >
-              <img
-                src={hotelDetails?.photos[0].urlTemplate
-                  .replace("{width}", 1000)
-                  .replace("{height}", -1)}
-                alt={`Slide 0`}
-                className="rounded-xl w-full h-auto md:h-full object-cover cursor-pointer"
-              />
+              {hotelDetails?.photos?.[0] && (
+                <div
+                  className="md:col-span-1"
+                  onClick={() => openModal(hotelDetails.photos[0])}
+                >
+                  <img
+                    src={hotelDetails.photos[0].urlTemplate
+                      .replace("{width}", 1000)
+                      .replace("{height}", -1)}
+                    alt={`Slide 0`}
+                    className="rounded-xl w-full h-auto md:h-full object-cover cursor-pointer"
+                  />
+                </div>
+              )}
             </div>
             <div className="hidden md:grid md:grid-cols-2 gap-4">
-              {hotelDetails.photos.slice(1, 5).map((photo, index) => (
+              {hotelDetails?.photos?.slice(1, 5).map((photo, index) => (
                 <div key={index} onClick={() => openModal(photo)}>
                   <img
                     src={photo.urlTemplate
@@ -276,7 +300,7 @@ const HotelPage = ({ loggedIn }) => {
           <div className="mt-6">
             <Title className="text-2xl font-bold mb-2">Tags</Title>
             <div className="flex flex-wrap gap-2">
-              {hotelDetails.about.tags?.map((tag, index) => (
+              {hotelDetails?.about?.tags?.map((tag, index) => (
                 <Badge
                   key={index}
                   className="bg-gray-300 text-white text-center"
@@ -290,26 +314,27 @@ const HotelPage = ({ loggedIn }) => {
           <div className="mt-6">
             <Title className="text-2xl font-bold mb-2">Amenities</Title>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {splitAmenitiesIntoColumns(hotelDetails.amenities, 3).map(
-                (column, colIndex) => (
-                  <div key={colIndex}>
-                    {column.map((amenity, index) => (
-                      <div key={index} className="mb-4">
-                        <Text className="font-bold text-lg">
-                          {amenity.title}
-                        </Text>
-                        <ul className="list-disc ml-6">
-                          {amenity.content.map((item, idx) => (
-                            <li key={idx} className="text-sm text-gray-700">
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                )
-              )}
+              {hotelDetails?.amenities &&
+                splitAmenitiesIntoColumns(hotelDetails.amenities, 3).map(
+                  (column, colIndex) => (
+                    <div key={colIndex}>
+                      {column.map((amenity, index) => (
+                        <div key={index} className="mb-4">
+                          <Text className="font-bold text-lg">
+                            {amenity.title}
+                          </Text>
+                          <ul className="list-disc ml-6">
+                            {amenity.content.map((item, idx) => (
+                              <li key={idx} className="text-sm text-gray-700">
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                )}
             </div>
           </div>
 
@@ -327,7 +352,7 @@ const HotelPage = ({ loggedIn }) => {
                 />
                 <button
                   type="submit"
-                  className="mt-4 bg-slate-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
+                  className="mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider"
                 >
                   Submit Review
                 </button>
@@ -355,24 +380,32 @@ const HotelPage = ({ loggedIn }) => {
           <div className="mt-6">
             <Title className="text-2xl font-bold mb-2">Reviews</Title>
             {/* Display reviews fetched from hotel details */}
-            {hotelDetails.reviews.content &&
+            {hotelDetails?.reviews?.content &&
               hotelDetails.reviews.content.map((review, index) => (
                 <Card key={index} className="mb-4 p-4">
                   <div className="flex items-center mb-2">
-                    <img
-                      src={review.userProfile.avatar.urlTemplate
-                        .replace("{width}", 300)
-                        .replace("{height}", -1)}
-                      alt="User avatar"
-                      className="rounded-full w-12 h-12 mr-4"
-                    />
+                    {review.userProfile?.avatar.urlTemplate ? (
+                      <img
+                        src={review.userProfile.avatar.urlTemplate
+                          .replace("{width}", 300)
+                          .replace("{height}", -1)}
+                        alt="User avatar"
+                        className="rounded-full w-12 h-12 mr-4"
+                      />
+                    ) : (
+                      <img
+                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                        alt="User avatar"
+                        className="rounded-full w-12 h-12 mr-4"
+                      />
+                    )}
                     <div>
-                      <Title className="text-base mb-1">{review.user}</Title>
+                      <Title className="text-base mb-1">Anonymous User</Title>
                       <Text className="text-sm text-gray-500">
                         {review.publishedDate}
                       </Text>
                       {sentimentScore && (
-                        <Badge className="font-bold py-2 text-white-500">
+                        <Badge className="font-bold  bg-gradient-to-r from-blue-600 to-cyan-500 py-2 text-white-500">
                           Vibe Score: {sentimentScore[index]}
                         </Badge>
                       )}
@@ -381,9 +414,8 @@ const HotelPage = ({ loggedIn }) => {
                   <Text>{review.text.replace(/<[^>]*>?/gm, "")}</Text>
                 </Card>
               ))}
-
             {/* Display reviews fetched by userId */}
-            {hotelDetails.userReviews &&
+            {hotelDetails?.userReviews &&
               hotelDetails.userReviews.length > 0 && (
                 <div>
                   {hotelDetails.userReviews.map((review, index) => (
@@ -407,7 +439,7 @@ const HotelPage = ({ loggedIn }) => {
                         )}
                         <div>
                           <Title className="text-base mb-1">
-                            {review.user}
+                            {`${user.user.firstName} ${user.user.lastName}`}
                           </Title>
                           <Text className="text-sm text-gray-500">
                             Written{" "}

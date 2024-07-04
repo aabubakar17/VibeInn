@@ -153,7 +153,7 @@ const Register = () => {
               </Alert>
             )}
             <button
-              className="m-4 bg-slate-800 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider "
+              className="m-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider "
               type="submit"
               onClick={handleSubmit}
             >

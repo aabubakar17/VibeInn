@@ -11,6 +11,7 @@ import {
   Button,
   Textarea,
   Modal,
+  Loader,
 } from "@mantine/core";
 import { Carousel } from "react-responsive-carousel";
 import { FaEdit, FaTrash } from "react-icons/fa"; // Importing Font Awesome icons
@@ -29,6 +30,7 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentReview, setCurrentReview] = useState(null);
   const [updatedText, setUpdatedText] = useState("");
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigate = useNavigate();
 
   const fetchHotelDetails = async (userReviews) => {
@@ -46,6 +48,7 @@ const Dashboard = () => {
         return acc;
       }, {});
       setHotelDetails(hotelDetailsMap);
+      setLoading(false); // Set loading to false once data is fetched
     } catch (error) {
       console.error("Error fetching hotel details:", error);
     }
@@ -58,6 +61,7 @@ const Dashboard = () => {
     };
 
     const fetchUserReviews = async () => {
+      setLoading(true); // Set loading to true before fetching data
       try {
         const currentUser = authService.getCurrentUser();
         if (currentUser) {
@@ -176,12 +180,16 @@ const Dashboard = () => {
     navigate(`/hotelpage/${hotelId}?checkIn=2024-08-08&checkOut=2024-08-12`);
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen  flex justify-center items-center ">
+        <Loader size={80} />
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 lg:mx-80">
+    <div className="min-h-screen p-6 lg:mx-80">
       <div className="mb-6">
         <div className="mb-4 flex justify-center">
           <Paper
@@ -213,7 +221,7 @@ const Dashboard = () => {
 
       <div className="mt-6 md:mx-24">
         <Title className="text-2xl font-bold mb-2">My Reviews</Title>
-        {reviews.length === 0 ? (
+        {reviews.length === 0 && !loading ? (
           <Text>No reviews found.</Text>
         ) : (
           reviews.map((review, index) => {
@@ -253,7 +261,10 @@ const Dashboard = () => {
                     >
                       {hotelDetail.location}
                     </Text>
-                    <a onClick={() => handleCardClick(review.accommodationId)}>
+                    <a
+                      className="cursor-pointer"
+                      onClick={() => handleCardClick(review.accommodationId)}
+                    >
                       <Text className="font-bold text-2xl mb-2" mt="xs" mb="md">
                         {hotelDetail.title}
                       </Text>

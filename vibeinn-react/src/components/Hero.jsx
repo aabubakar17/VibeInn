@@ -1,23 +1,34 @@
 import React, { useState } from "react";
-import { Button, Container, Text, Title, Grid } from "@mantine/core";
+import { Button, Container, List } from "@mantine/core";
 import Datepicker from "react-tailwindcss-datepicker";
 import { useNavigate } from "react-router-dom";
+import { fetchSuggestions } from "../services/suggestions.service";
+import { PiCity } from "react-icons/pi"; // Import the PiCity icon
 
 const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
   const [location, setLocation] = useState(initialLocation || "");
+  const [suggestions, setSuggestions] = useState([]);
+  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
+  const [input, setInput] = useState("");
   const [value, setValue] = useState({
     startDate: initialStartDate || null,
     endDate: initialEndDate || null,
   });
 
   const navigate = useNavigate();
+
   const handleSearch = () => {
+    if (selectedSuggestion && !location) {
+      setLocation(selectedSuggestion.address.freeformAddress);
+    }
+
     if (!location || !value.startDate || !value.endDate) {
       return;
     } else {
+      console.log(location);
       navigate(
         "/search?location=" +
-          location +
+          encodeURIComponent(location) +
           "&checkIn=" +
           value.startDate +
           "&checkOut=" +
@@ -27,24 +38,77 @@ const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
     }
   };
 
+  const handleSuggestionClick = (suggestion) => {
+    console.log(suggestion.address.freeformAddress);
+    setInput(suggestion.address.freeformAddress);
+    setSelectedSuggestion(suggestion);
+    setLocation(suggestion.address.freeformAddress);
+    setSuggestions([]);
+  };
+
+  const handleInputChange = (event) => {
+    const { value } = event.target;
+    setInput(value);
+    if (value.trim()) {
+      fetchSuggestions(value)
+        .then((response) => {
+          setSuggestions(response);
+        })
+        .catch(() => {
+          setSuggestions([]);
+        });
+    } else {
+      setSuggestions([]);
+    }
+  };
+  const renderSuggestions = (suggestions, handleSuggestionClick) => {
+    if (suggestions.length === 0) return null;
+
+    return (
+      <List className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10 mt-1">
+        {suggestions.map((suggestion, index) => (
+          <List.Item
+            key={index}
+            onClick={() => handleSuggestionClick(suggestion)}
+            className="cursor-pointer px-4 py-2 hover:bg-gray-200 flex items-center"
+            style={{ width: "100%" }}
+          >
+            <div className="flex items-center w-full">
+              <PiCity className="mr-2 text-black-500" />{" "}
+              {/* Adjust icon size and color */}
+              <span className="text-black truncate">
+                {suggestion.address.freeformAddress}
+              </span>{" "}
+              {/* Adjust text color */}
+            </div>
+          </List.Item>
+        ))}
+      </List>
+    );
+  };
+
   return (
     <section className="text-black py-8">
       <Container className="text-center">
         <div className="mt-8">
-          <div className=" p-4 shadow-2xl rounded-xl md:rounded-xl bg-white">
+          <div className="p-4 shadow-2xl rounded-xl bg-white">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-              <div className="flex justify-center md:justify-start">
-                <input
-                  placeholder="Search destination"
-                  value={location}
-                  onChange={(event) => setLocation(event.currentTarget.value)}
-                  className="w-full md:max-w-none px-4 py-1.5 border border-black rounded-lg"
-                />
+              <div className="relative flex justify-center md:justify-start">
+                <div className="w-full relative">
+                  <input
+                    placeholder="Search destination"
+                    value={input}
+                    onChange={handleInputChange}
+                    className="w-full bg-transparent md:max-w-none px-4 py-1.5 border border-gray-300 rounded-lg"
+                  />
+
+                  {renderSuggestions(suggestions, handleSuggestionClick)}
+                </div>
               </div>
               <div className="flex justify-center">
                 <Datepicker
-                  primaryColor={"orange"}
-                  useRange={false}
+                  primaryColor={"sky"}
+                  useRange={true}
                   value={value}
                   onChange={setValue}
                   popoverDirection="down"
@@ -53,10 +117,14 @@ const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
                   className="w-full e md:max-w-none border-black rounded-lg px-4 py-1.5"
                 />
               </div>
-              <div className="flex justify-center md:justify-end">
+              <div className="flex justify-center">
                 <Button
                   onClick={handleSearch}
-                  className="rounded-full text-black bg-transparent w-48 bg-gradient-to-r hover:from-pink-600 hover:to-orange-400"
+                  variant="gradient"
+                  gradient={{ deg: 133, from: "blue", to: "cyan" }}
+                  size="sm"
+                  radius="md"
+                  className="w-full md:max-w-none bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
                 >
                   Discover ➔
                 </Button>

@@ -23,7 +23,7 @@ const CallToActions = () => {
         <a
           href="/register"
           size="lg"
-          className="mt-8 bg-gradient-to-r from-pink-500 to-yellow-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider md:mt-0 md:ml-4"
+          className="mt-8 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-md hover:bg-gray-600 px-4 py-2 text-white uppercase rounded text-xs tracking-wider md:mt-0 md:ml-4"
         >
           Join Now
         </a>

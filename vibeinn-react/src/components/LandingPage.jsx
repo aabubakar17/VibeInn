@@ -16,14 +16,22 @@ import Hero from "./Hero";
 import HowItWorks from "./HowItWorks";
 import CallToActions from "./CallToActions";
 import Testimonials from "./Testimonials";
-
-const LandingPage = () => {
+import Footer from "./Footer";
+import Navbar from "./Navbar";
+const LandingPage = ({ loggedIn, setLoggedIn }) => {
   return (
-    <div className="relative bg-gray-100 overflow-hidden">
+    <div className="relative bg-white overflow-hidden">
       {/* Blurred Circle Background */}
-      <div className="absolute inset-0 flex justify-start place-items-start z-0">
-        <div className="w-2/3 h-2/3 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full blur-3xl opacity-30"></div>
+      {/* <div className="absolute inset-0 flex justify-start items-start z-0">
+        <div className="w-full h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-4xl blur-2xl opacity-30"></div>
+      </div> */}
+      <div className="absolute inset-0 flex justify-end items-end  z-0">
+        <div className="size-1/2 bg-gradient-to-r from-violet-200 to-pink-200 rounded-4xl blur-2xl opacity-30"></div>
       </div>
+      <div className="absolute inset-0 flex justify-start items-start  z-0">
+        <div className="size-2/3 bg-gradient-to-r from-violet-200 to-pink-200 rounded-r-full blur-2xl opacity-30"></div>
+      </div>
+
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
@@ -32,7 +40,8 @@ const LandingPage = () => {
             Discover the Vibe of Your Next Stay
           </Title>
           <Text className="mt-4 text-xl">
-            Find the perfect accommodation with insights from real user reviews.
+            Uncover the best stays and experiences. Begin your journey with
+            VibeInn now.
           </Text>
           <Hero />
         </Container>
@@ -44,6 +53,7 @@ const LandingPage = () => {
         <Testimonials />
         {/* Call-to-Action Section */}
         <CallToActions />
+        <Footer />
       </div>
     </div>
   );
