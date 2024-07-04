@@ -146,3 +146,5 @@ dist
 .DS_Store
 ignore.md
 db-helpers/
+# Local Netlify folder
+.netlify

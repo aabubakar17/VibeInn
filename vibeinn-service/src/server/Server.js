@@ -17,7 +17,7 @@ export default class Server {
     this.#router = router;
     this.#accommRouter = accommRouter;
     this.#reviewRouter = reviewRouter;
-    this.#app.use(
+    /* this.#app.use(
       cors({
         origin: [
           "http://localhost:5173",
@@ -31,7 +31,8 @@ export default class Server {
         preflightContinue: false,
         optionsSuccessStatus: 204,
       })
-    );
+    ); */
+    this.#app.use(cors());
     this.#app.use(express.json());
   }
 
