@@ -68,6 +68,8 @@ const SearchResults = () => {
     );
   };
 
+  console.log(searchLocation);
+
   // Function to calculate number of nights
   const calculateNights = (checkIn, checkOut) => {
     const start = dayjs(checkIn);

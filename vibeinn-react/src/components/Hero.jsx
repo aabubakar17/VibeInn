@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { Button, Container, List } from "@mantine/core";
 import Datepicker from "react-tailwindcss-datepicker";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchSuggestions } from "../services/suggestions.service";
 import { PiCity } from "react-icons/pi"; // Import the PiCity icon
 
 const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
+  console.log(initialLocation);
   const [location, setLocation] = useState(initialLocation || "");
   const [suggestions, setSuggestions] = useState([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialLocation || "");
   const [value, setValue] = useState({
     startDate: initialStartDate || null,
     endDate: initialEndDate || null,
@@ -91,7 +92,7 @@ const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
     <section className="text-black py-8">
       <Container className="text-center">
         <div className="mt-8">
-          <div className="p-4 shadow-2xl rounded-xl bg-white">
+          <div className="p-4 shadow-2xl rounded-xl bg-transparent">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
               <div className="relative flex justify-center md:justify-start">
                 <div className="w-full relative">
@@ -99,7 +100,7 @@ const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
                     placeholder="Search destination"
                     value={input}
                     onChange={handleInputChange}
-                    className="w-full bg-transparent md:max-w-none px-4 py-1.5 border border-gray-300 rounded-lg"
+                    className="w-full bg-transparent border-none md:max-w-none px-4 py-1.5 border border-gray-300 rounded-lg"
                   />
 
                   {renderSuggestions(suggestions, handleSuggestionClick)}
@@ -108,13 +109,14 @@ const Hero = ({ initialLocation, initialEndDate, initialStartDate }) => {
               <div className="flex justify-center">
                 <Datepicker
                   primaryColor={"sky"}
+                  inputContai
                   useRange={true}
                   value={value}
                   onChange={setValue}
                   popoverDirection="down"
                   placeholder="Check-in ~ Check-out"
                   displayFormat={`MMM-DD`}
-                  className="w-full e md:max-w-none border-black rounded-lg px-4 py-1.5"
+                  inputClassName="w-full bg-transparent md:max-w-none border-black rounded-lg px-4 py-1.5"
                 />
               </div>
               <div className="flex justify-center">

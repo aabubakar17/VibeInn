@@ -67,7 +67,7 @@ const Features = () => {
   ));
 
   return (
-    <div className="mt-4 md:m-36">
+    <div className="mt-44 xl:mx-4 lg:mx-4 sm:mx-4 xl:mx-80 mt-36 ">
       <Grid gutter={80}>
         <Grid.Col span={{ base: 12, md: 5 }}>
           <Title className={classes.title} order={2}>

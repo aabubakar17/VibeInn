@@ -12,48 +12,7 @@ import {
 } from "@mantine/core";
 const HowItWorks = () => {
   return (
-    /*  <section classNameName="py-20 min-w-full">
-      <Container classNameName="min-w-2/3">
-        <Title classNameName="text-center text-3xl font-bold">How It Works</Title>
-        <div classNameName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
-          <Card classNameName="p-6 bg-transparent backdrop-blur-md rounded-lg shadow-glass">
-            <Text classNameName="text-center font-semibold">
-              Step 1: Search for Accommodations
-            </Text>
-            <Text classNameName="text-center mt-2">
-              Enter your desired location and dates to find available
-              accommodations.
-            </Text>
-          </Card>
-          <Card classNameName="p-6 bg-glass-white backdrop-blur-md rounded-lg shadow-glass">
-            <Text classNameName="text-center font-semibold">
-              Step 2: View Sentiment Analysis
-            </Text>
-            <Text classNameName="text-center mt-2">
-              See the overall sentiment of user reviews for each accommodation.
-            </Text>
-          </Card>
-          <Card classNameName="p-6 bg-glass-white backdrop-blur-md rounded-lg shadow-glass">
-            <Text classNameName="text-center font-semibold">
-              Step 3: Read and Write Reviews
-            </Text>
-            <Text classNameName="text-center mt-2">
-              Read detailed reviews from other users and share your own
-              experiences.
-            </Text>
-          </Card>
-          <Card classNameName="p-6 bg-glass-white backdrop-blur-md rounded-lg shadow-glass">
-            <Text classNameName="text-center font-semibold">
-              Step 4: Make an Informed Decision
-            </Text>
-            <Text classNameName="text-center mt-2">
-              Choose the best accommodation based on comprehensive insights.
-            </Text>
-          </Card>
-        </div>
-      </Container>
-    </section> */
-    <section className="py-10 bg-transparent md:-mt-16 sm:py-16 lg:py-24">
+    <section className="py-10 bg-transparent md: mt-12 sm:py-16 lg:py-24">
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold leading-tight text-black sm:text-4xl lg:text-5xl">
