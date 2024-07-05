@@ -78,7 +78,7 @@ describe("HotelPage Component", () => {
       </MantineProvider>
     );
 
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+    expect(screen.getByText(/calculating the vibe.../i)).toBeInTheDocument();
 
     await waitFor(() => {
       // Add assertions for the expected content once loading is completed
@@ -100,7 +100,9 @@ describe("HotelPage Component", () => {
       expect(screen.getByText("Test Hotel")).toBeInTheDocument();
       expect(screen.getByText("4.5 (10 reviews)")).toBeInTheDocument();
       expect(screen.getByText("Great place!")).toBeInTheDocument();
-      expect(screen.getByText("Vibe Score:")).toBeInTheDocument();
+      expect(screen.getByText(/Vibe Score 7/i)).toHaveTextContent(
+        "Vibe Score 7"
+      );
     });
   });
 
@@ -145,8 +147,8 @@ describe("HotelPage Component", () => {
     );
 
     // Assuming the first photo is selected
-    const firstPhoto = screen.getByAltText("Slide 0");
-    userEvent.click(firstPhoto);
+    const firstPhoto = await screen.findAllByAltText("Slide 0");
+    userEvent.click(firstPhoto[0]);
 
     await waitFor(() => {
       expect(screen.getByAltText("Slide 0")).toBeInTheDocument();
@@ -165,7 +167,7 @@ describe("HotelPage Component", () => {
     );
 
     // Fill out the review text area
-    const reviewTextArea = screen.getByPlaceholderText(
+    const reviewTextArea = await screen.findByPlaceholderText(
       "Write your review here..."
     );
     userEvent.type(reviewTextArea, "This is a test review.");

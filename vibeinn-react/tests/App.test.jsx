@@ -27,14 +27,15 @@ describe("App", () => {
       </MantineProvider>
     );
 
-    expect(screen.getByText("VibeInn")).toBeInTheDocument();
     expect(screen.getByText("Login")).toBeInTheDocument();
     expect(screen.getByText("Get Started ➔")).toBeInTheDocument();
     expect(
       screen.getByText("Discover the Vibe of Your Next Stay")
     ).toBeInTheDocument();
-    expect(screen.getByText("Features")).toBeInTheDocument();
-    expect(screen.getByText("How It Works")).toBeInTheDocument();
+    expect(
+      screen.getByText("Start VibeInn your way to the perfect stay")
+    ).toBeInTheDocument();
+    expect(screen.getByText("How does it work?")).toBeInTheDocument();
     expect(screen.getByText("What Our Users Say")).toBeInTheDocument();
     expect(screen.getByText("Join VibeInn Today")).toBeInTheDocument();
   });

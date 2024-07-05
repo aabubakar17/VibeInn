@@ -26,10 +26,10 @@ const LandingPage = ({ loggedIn, setLoggedIn }) => {
         <div className="w-full h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-4xl blur-2xl opacity-30"></div>
       </div> */}
       <div className="absolute inset-0 flex justify-end items-end  z-0">
-        <div className="size-1/2 bg-gradient-to-r from-violet-200 to-pink-200 rounded-4xl blur-2xl opacity-30"></div>
+        <div className="size-2/3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-l-full blur-2xl opacity-30"></div>
       </div>
       <div className="absolute inset-0 flex justify-start items-start  z-0">
-        <div className="size-2/3 bg-gradient-to-r from-violet-200 to-pink-200 rounded-r-full blur-2xl opacity-30"></div>
+        <div className="size-1/2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-r-full blur-2xl opacity-30"></div>
       </div>
 
       {/* Main Content */}

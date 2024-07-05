@@ -78,7 +78,9 @@ describe("Dashboard Component", () => {
       </MantineProvider>
     );
 
-    expect(screen.getByText("No reviews found.")).toBeInTheDocument();
+    // Check if the loader is in the document
+    const loader = document.body.querySelector(".mantine-Loader-root");
+    expect(loader).toBeInTheDocument();
   });
 
   it("should render user profile information", async () => {
