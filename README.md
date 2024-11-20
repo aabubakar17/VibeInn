@@ -43,6 +43,9 @@ Travelers often struggle to quickly gauge the overall sentiment of accommodation
 - Node.js
 - Express.js
 - JWT (JSON Web Token)
+- 
+**Sentiment Analysis Model:**
+- [distilbert-base-uncased](https://huggingface.co/Xenova/distilbert-base-uncased-finetuned-sst-2-english)
 
 **Testing:**
 
